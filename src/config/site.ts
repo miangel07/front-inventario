@@ -4,17 +4,17 @@ export const siteConfig = {
   name: "Vite + HeroUI",
   description: "Make beautiful websites regardless of your design experience.",
   navItems: [
-    {
-      label: "Home",
+/*     {
+      label: "Inicio",
       href: "/",
+    }, */
+    {
+      label: "Inicio",
+      href: "/home",
     },
     {
-      label: "Docs",
-      href: "/docs",
-    },
-    {
-      label: "Pricing",
-      href: "/pricing",
+      label: "Usuarios",
+      href: "/users",
     },
     {
       label: "Blog",

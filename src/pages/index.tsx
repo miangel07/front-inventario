@@ -16,7 +16,7 @@ export default function IndexPage() {
           <br />
           <span className={title()}>
 
-            El paya
+           
           </span>
           <div className={subtitle({ class: "mt-4" })}>
 
