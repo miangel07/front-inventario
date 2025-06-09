@@ -1,4 +1,5 @@
-import LoginInterface from "@/components/loginComponents/LoginComponent"
+import LoginComponent from "@/components/loginComponents/LoginComponent"
+
 
 
 type Props = {}
@@ -6,7 +7,7 @@ type Props = {}
 const LoginPage = (props: Props) => {
   return (
     <>
-    <LoginInterface/>
+    <LoginComponent/>
     </>
   )
 }

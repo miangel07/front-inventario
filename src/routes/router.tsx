@@ -2,6 +2,7 @@ import {  Suspense } from "react";
 import {  Routes } from "react-router-dom";
 import { RouteHomePage } from "./homeRoute/RouteHome";
 import { RouteLoginPage } from "./loginRoute/RouteLogin";
+import { RouteUsersPage } from "./usersRoute/RouteUsers";
 
 
 
@@ -45,6 +46,7 @@ const Router = () => {
         <Routes>
         {RouteLoginPage()}
         {RouteHomePage()}
+        {RouteUsersPage()}
         </Routes>
 
     </Suspense>

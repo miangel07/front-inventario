@@ -1,10 +1,15 @@
+import LayoutDefault from "@/layouts/Layoutdefault";
 
-type Props = {}
+type Props = {};
 
 const HomePage = (props: Props) => {
   return (
-    <div>HomePage</div>
-  )
-}
+    <>
+      <LayoutDefault>
+        <div>HOme page</div>
+      </LayoutDefault>
+    </>
+  );
+};
 
-export default HomePage
+export default HomePage;
