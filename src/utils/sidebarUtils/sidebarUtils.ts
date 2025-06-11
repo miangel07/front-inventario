@@ -1,36 +1,195 @@
-import { MenuItem } from '@/types/sidebarTypes/sidebarTypes';
 import { 
   Home, 
-  BarChart3, 
+  Package, 
+  ShoppingCart, 
+  ArrowLeftRight, 
   Users, 
-  FileText, 
-  Mail, 
-  Calendar,
-  Settings,
+  Settings, 
+  BarChart3,
+  Building2,
+  Tags,
+  Ruler,
+  PlusCircle,
+  List,
+  History,
+  AlertCircle,
+  FileText,
+  Truck,
+  PackageCheck,
   HelpCircle,
-  Package,
-  ShoppingCart
+  Bell
 } from 'lucide-react';
+import { MenuItem } from '@/types/sidebarTypes/sidebarTypes';
 
 export const menuItems: MenuItem[] = [
-    { key: 'dashboard', label: 'Dashboard', icon: Home, href: '/home', category: 'main' },
-    { key: 'analytics', label: 'Analytics', icon: BarChart3, href: '/analytics', category: 'main' },
-    { key: 'products', label: 'Productos', icon: Package, href: '/products', category: 'inventory' },
-    { key: 'orders', label: 'Pedidos', icon: ShoppingCart, href: '/orders', badge: 12, category: 'inventory' },
-    { key: 'users', label: 'Usuarios', icon: Users, href: '/users', category: 'management' },
-    { key: 'documents', label: 'Documentos', icon: FileText, href: '/documents', category: 'management' },
-    { key: 'messages', label: 'Mensajes', icon: Mail, href: '/messages', badge: 3, category: 'communication' },
-    { key: 'calendar', label: 'Calendario', icon: Calendar, href: '/calendar', category: 'communication' },
-  ];
+  // Dashboard
+  {
+    key: 'dashboard',
+    label: 'Dashboard',
+    icon: Home,
+    href: '/home',
+    category: 'main'
+  },
 
- export const bottomMenuItems = [
-    { key: 'settings', label: 'Configuración', icon: Settings, href: '/settings' },
-    { key: 'help', label: 'Ayuda', icon: HelpCircle, href: '/help' },
-  ];
+  // Módulo de Inventario
+  {
+    key: 'productos',
+    label: 'Productos',
+    icon: Package,
+    href: '/productos',
+    category: 'inventario'
+  },
+  {
+    key: 'categorias',
+    label: 'Categorías',
+    icon: Tags,
+    href: '/categorias',
+    category: 'inventario'
+  },
+  {
+    key: 'bodegas',
+    label: 'Bodegas',
+    icon: Building2,
+    href: '/bodegas',
+    category: 'inventario'
+  },
+  {
+    key: 'unidades-medida',
+    label: 'Unidades de Medida',
+    icon: Ruler,
+    href: '/unidades-medida',
+    category: 'inventario'
+  },
 
-  export   const categoryLabels = {
-    main: 'Principal',
-    inventory: 'Inventario',
-    management: 'Gestión',
-    communication: 'Comunicación'
+  // Módulo de Préstamos
+  {
+    key: 'nuevo-prestamo',
+    label: 'Nuevo Préstamo',
+    icon: PlusCircle,
+    href: '/prestamos/nuevo',
+    category: 'prestamos'
+  },
+  {
+    key: 'prestamos-activos',
+    label: 'Préstamos Activos',
+    icon: ShoppingCart,
+    href: '/prestamos/activos',
+    category: 'prestamos',
+    badge: '12' // Ejemplo de badge dinámico
+  },
+  {
+    key: 'devoluciones',
+    label: 'Devoluciones',
+    icon: PackageCheck,
+    href: '/prestamos/devoluciones',
+    category: 'prestamos'
+  },
+  {
+    key: 'historial-prestamos',
+    label: 'Historial de Préstamos',
+    icon: History,
+    href: '/prestamos/historial',
+    category: 'prestamos'
+  },
+
+  // Módulo de Movimientos/Traslados
+  {
+    key: 'nuevo-traslado',
+    label: 'Nuevo Traslado',
+    icon: Truck,
+    href: '/traslados/nuevo',
+    category: 'movimientos'
+  },
+  {
+    key: 'traslados-activos',
+    label: 'Traslados Pendientes',
+    icon: AlertCircle,
+    href: '/traslados/pendientes',
+    category: 'movimientos'
+  },
+  {
+    key: 'historial-traslados',
+    label: 'Historial de Traslados',
+    icon: ArrowLeftRight,
+    href: '/traslados/historial',
+    category: 'movimientos'
+  },
+
+  // Módulo de Reportes
+  {
+    key: 'reportes-inventario',
+    label: 'Reporte de Inventario',
+    icon: BarChart3,
+    href: '/reportes/inventario',
+    category: 'reportes'
+  },
+  {
+    key: 'reportes-prestamos',
+    label: 'Reporte de Préstamos',
+    icon: FileText,
+    href: '/reportes/prestamos',
+    category: 'reportes'
+  },
+  {
+    key: 'reportes-movimientos',
+    label: 'Reporte de Movimientos',
+    icon: List,
+    href: '/reportes/movimientos',
+    category: 'reportes'
+  }
+];
+
+export const bottomMenuItems: MenuItem[] = [
+  {
+    key: 'usuarios',
+    label: 'Gestión de Usuarios',
+    icon: Users,
+    // href: '/admin/usuarios',
+    href:'/users',
+    category: 'admin'
+  },
+  {
+    key: 'configuracion',
+    label: 'Configuración',
+    icon: Settings,
+    href: '/configuracion',
+    category: 'admin'
+  },
+  {
+    key: 'ayuda',
+    label: 'Ayuda',
+    icon: HelpCircle,
+    href: '/ayuda',
+    category: 'support'
+  }
+];
+
+export const categoryLabels = {
+  main: 'Principal',
+  inventario: 'Gestión de Inventario',
+  prestamos: 'Gestión de Préstamos',
+  movimientos: 'Movimientos y Traslados',
+  reportes: 'Reportes y Análisis',
+  admin: 'Administración',
+  support: 'Soporte'
+};
+
+// Función para obtener badges dinámicos (puedes conectar esto a tu API)
+export const getDynamicBadges = () => {
+  return {
+    'prestamos-activos': '12',
+    'traslados-activos': '3',
+    // Agrega más badges según necesites
   };
+};
+
+// Función para verificar permisos de usuario (ejemplo)
+export const filterMenuByPermissions = (userRole: string) => {
+  const adminOnlyItems = ['usuarios', 'empresas', 'configuracion'];
+  
+  if (userRole !== 'admin') {
+    return menuItems.filter(item => !adminOnlyItems.includes(item.key));
+  }
+  
+  return menuItems;
+};

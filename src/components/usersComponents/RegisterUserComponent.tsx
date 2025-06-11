@@ -1,308 +1,272 @@
-import React, { useState } from 'react';
-import { 
-  Modal, 
-  ModalContent, 
-  ModalHeader, 
-  ModalBody, 
-  ModalFooter,
-  Button,
-  Input,
-  Select,
-  SelectItem,
-  useDisclosure
-} from '@nextui-org/react';
-import { User, Mail, Phone, MapPin, Lock, CreditCard } from 'lucide-react';
+import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { Lock, EyeOff, Eye, Edit3, UserPlus, User, CreditCard, Mail, Phone, MapPin } from "lucide-react";
+import { RegisterUserProps, UsersType } from "@/types/usersTypes/usersTypes";
+import { Id, toast } from "react-toastify";
+import { useRegisterUserMutation, useUpdateUserMutation } from "@/store/slice/usersSlice";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { UserSchemaZod } from "@/validations/userValidation/userSchemaZod";
+import { InputDinamic } from "../DYNAMIC_COMPONENTS/InputDinamic";
+import { documentTypesOptions } from "@/utils/usersUtils/registerUserUtils";
+import SelectSearchAutoCompleteDinamic from "../DYNAMIC_COMPONENTS/SelectSearchAutoCompleteDinamic";
+import { Button } from "@heroui/react";
 
-interface FormData {
-  username: string;
-  lastname: string;
-  phone: string;
-  identificationNumber: string;
-  address: string;
-  password: string;
-  typeDocument: string;
-  email: string;
-}
+const RegisterUserComponent = ({ onClose, user }: RegisterUserProps) => {
+  const referenciaIdtostat = useRef<Id | null>(null);
 
-const RegistrationForm: React.FC = () => {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [formData, setFormData] = useState<FormData>({
-    username: '',
-    lastname: '',
-    phone: '',
-    identificationNumber: '',
-    address: '',
-    password: '',
-    typeDocument: 'cc',
-    email: ''
+  const [isVisible, setIsVisible] = useState<boolean>(false);
+  const [isVisibleConfirma, setIsVisibleConfirma] = useState<boolean>(false);
+
+  const [registerUser, { isLoading: isLoadingRegister, isSuccess: isSuccessRegister, isError: isErrorRegister, error: errorRegister }] = useRegisterUserMutation();
+
+  const [updateUser, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate, isError: isErrorUpdate, error: errorUpdate }] = useUpdateUserMutation();
+
+  const isLoading = isLoadingRegister || isLoadingUpdate;
+  const isSuccess = isSuccessRegister || isSuccessUpdate;
+  const isError = isErrorRegister || isErrorUpdate;
+  const error = errorRegister || errorUpdate;
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<UsersType>({
+    resolver: zodResolver(UserSchemaZod),
+    defaultValues: {},
   });
 
-  const [errors, setErrors] = useState<Partial<FormData>>({});
-
-  const documentTypes = [
-    { key: 'cc', label: 'Cédula de Ciudadanía' },
-    { key: 'ce', label: 'Cédula de Extranjería' },
-    { key: 'ti', label: 'Tarjeta de Identidad' },
-    { key: 'passport', label: 'Pasaporte' },
-    { key: 'nit', label: 'NIT' }
-  ];
-
-  const handleInputChange = (field: keyof FormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
+  useEffect(() => {
+    if (user) {
+      reset(user);
     }
-  };
+  }, [user, reset]);
 
-  const validateForm = (): boolean => {
-    const newErrors: Partial<FormData> = {};
+  useEffect(() => {
+    if (isLoading) {
+      referenciaIdtostat.current = toast.loading("Procesando...");
+    }
+    if (isSuccess) {
+      toast.dismiss(referenciaIdtostat.current!);
+      toast.success(`Usuario ${user ? "actualizado" : "registrado"} correctamente.`);
+      onClose();
+    }
+    if (isError && Array.isArray(error)) {
+      toast.dismiss(referenciaIdtostat.current!);
+      error.map((e) => toast.error(`${e.message}`));
+      onClose();
+    }
+  }, [isSuccessRegister, isLoadingRegister, isErrorRegister, isSuccessUpdate, isLoadingUpdate, isErrorUpdate]);
 
-    if (!formData.username.trim()) newErrors.username = 'El nombre es requerido';
-    if (!formData.lastname.trim()) newErrors.lastname = 'El apellido es requerido';
-    if (!formData.email.trim()) {
-      newErrors.email = 'El email es requerido';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email inválido';
-    }
-    if (!formData.phone.trim()) {
-      newErrors.phone = 'El teléfono es requerido';
-    } else if (!/^\d{10}$/.test(formData.phone.replace(/\s/g, ''))) {
-      newErrors.phone = 'Teléfono debe tener 10 dígitos';
-    }
-    if (!formData.identificationNumber.trim()) {
-      newErrors.identificationNumber = 'El número de identificación es requerido';
-    }
-    if (!formData.password.trim()) {
-      newErrors.password = 'La contraseña es requerida';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'La contraseña debe tener al menos 6 caracteres';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = () => {
-    if (validateForm()) {
-      console.log('Datos del formulario:', formData);
-      alert('¡Registro exitoso! Revisa la consola para ver los datos.');
-      onOpenChange();
-      // Reset form
-      setFormData({
-        username: '',
-        lastname: '',
-        phone: '',
-        identificationNumber: '',
-        address: '',
-        password: '',
-        typeDocument: 'cc',
-        email: ''
-      });
+  const onSubmit = async (data: UsersType) => {
+    try {
+      if (user?.id) {
+        await updateUser({ ...data, id: user.id }).unwrap();
+      } else {
+        await registerUser(data).unwrap();
+      }
+    } catch (error) {
+      console.error("Error: ", error);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">Sistema de Registro</h1>
-        <p className="text-gray-600 mb-8">Haz clic en el botón para abrir el formulario de registro</p>
-        <Button 
-          onPress={onOpen}
-          color="primary"
-          size="lg"
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg shadow-lg transition-all duration-200"
-        >
-          Abrir Formulario de Registro
-        </Button>
-      </div>
-
-      <Modal 
-        isOpen={isOpen} 
-        onOpenChange={onOpenChange}
-        placement="center"
-        size="2xl"
-        scrollBehavior="inside"
-        classNames={{
-          base: "bg-white",
-          header: "border-b border-gray-200",
-          body: "py-6",
-          footer: "border-t border-gray-200"
-        }}
-      >
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                <h2 className="text-2xl font-bold text-gray-800">Registro de Usuario</h2>
-                <p className="text-sm text-gray-500">Complete todos los campos para crear su cuenta</p>
-              </ModalHeader>
-              
-              <ModalBody>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Nombre */}
-                  <Input
-                    label="Nombre"
-                    placeholder="Ingrese su nombre"
-                    value={formData.username}
-                    onValueChange={(value) => handleInputChange('username', value)}
-                    startContent={<User className="text-gray-400" size={18} />}
-                    variant="bordered"
-                    isInvalid={!!errors.username}
-                    errorMessage={errors.username}
-                    classNames={{
-                      input: "text-gray-700",
-                      inputWrapper: "border-gray-300 hover:border-blue-400 focus-within:border-blue-500"
-                    }}
-                  />
-
-                  {/* Apellido */}
-                  <Input
-                    label="Apellido"
-                    placeholder="Ingrese su apellido"
-                    value={formData.lastname}
-                    onValueChange={(value) => handleInputChange('lastname', value)}
-                    startContent={<User className="text-gray-400" size={18} />}
-                    variant="bordered"
-                    isInvalid={!!errors.lastname}
-                    errorMessage={errors.lastname}
-                    classNames={{
-                      input: "text-gray-700",
-                      inputWrapper: "border-gray-300 hover:border-blue-400 focus-within:border-blue-500"
-                    }}
-                  />
-
-                  {/* Email */}
-                  <Input
-                    label="Email"
-                    placeholder="correo@ejemplo.com"
-                    type="email"
-                    value={formData.email}
-                    onValueChange={(value) => handleInputChange('email', value)}
-                    startContent={<Mail className="text-gray-400" size={18} />}
-                    variant="bordered"
-                    isInvalid={!!errors.email}
-                    errorMessage={errors.email}
-                    classNames={{
-                      input: "text-gray-700",
-                      inputWrapper: "border-gray-300 hover:border-blue-400 focus-within:border-blue-500"
-                    }}
-                  />
-
-                  {/* Teléfono */}
-                  <Input
-                    label="Teléfono"
-                    placeholder="3001234567"
-                    value={formData.phone}
-                    onValueChange={(value) => handleInputChange('phone', value)}
-                    startContent={<Phone className="text-gray-400" size={18} />}
-                    variant="bordered"
-                    isInvalid={!!errors.phone}
-                    errorMessage={errors.phone}
-                    classNames={{
-                      input: "text-gray-700",
-                      inputWrapper: "border-gray-300 hover:border-blue-400 focus-within:border-blue-500"
-                    }}
-                  />
-
-                  {/* Tipo de Documento */}
-                  <Select
-                    label="Tipo de Documento"
-                    placeholder="Seleccione el tipo"
-                    selectedKeys={[formData.typeDocument]}
-                    onSelectionChange={(keys) => {
-                      const value = Array.from(keys)[0] as string;
-                      handleInputChange('typeDocument', value);
-                    }}
-                    startContent={<CreditCard className="text-gray-400" size={18} />}
-                    variant="bordered"
-                    classNames={{
-                      trigger: "border-gray-300 hover:border-blue-400 data-[focus=true]:border-blue-500",
-                      value: "text-gray-700"
-                    }}
-                  >
-                    {documentTypes.map((doc) => (
-                      <SelectItem key={doc.key} value={doc.key}>
-                        {doc.label}
-                      </SelectItem>
-                    ))}
-                  </Select>
-
-                  {/* Número de Identificación */}
-                  <Input
-                    label="Número de Identificación"
-                    placeholder="123456789"
-                    value={formData.identificationNumber}
-                    onValueChange={(value) => handleInputChange('identificationNumber', value)}
-                    startContent={<CreditCard className="text-gray-400" size={18} />}
-                    variant="bordered"
-                    isInvalid={!!errors.identificationNumber}
-                    errorMessage={errors.identificationNumber}
-                    classNames={{
-                      input: "text-gray-700",
-                      inputWrapper: "border-gray-300 hover:border-blue-400 focus-within:border-blue-500"
-                    }}
-                  />
-
-                  {/* Dirección */}
-                  <div className="md:col-span-2">
-                    <Input
-                      label="Dirección"
-                      placeholder="Ingrese su dirección (opcional)"
-                      value={formData.address}
-                      onValueChange={(value) => handleInputChange('address', value)}
-                      startContent={<MapPin className="text-gray-400" size={18} />}
-                      variant="bordered"
-                      classNames={{
-                        input: "text-gray-700",
-                        inputWrapper: "border-gray-300 hover:border-blue-400 focus-within:border-blue-500"
-                      }}
-                    />
-                  </div>
-
-                  {/* Contraseña */}
-                  <div className="md:col-span-2">
-                    <Input
-                      label="Contraseña"
-                      placeholder="Ingrese su contraseña"
-                      type="password"
-                      value={formData.password}
-                      onValueChange={(value) => handleInputChange('password', value)}
-                      startContent={<Lock className="text-gray-400" size={18} />}
-                      variant="bordered"
-                      isInvalid={!!errors.password}
-                      errorMessage={errors.password}
-                      classNames={{
-                        input: "text-gray-700",
-                        inputWrapper: "border-gray-300 hover:border-blue-400 focus-within:border-blue-500"
-                      }}
-                    />
-                  </div>
+    <>
+      <div className="flex flex-col h-full">
+        <div className="flex-1 overflow-y-auto p-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <User className="w-4 h-4 text-cuarto" />
                 </div>
-              </ModalBody>
-              
-              <ModalFooter>
-                <Button 
-                  color="danger" 
-                  variant="light" 
-                  onPress={onClose}
-                  className="text-gray-600 hover:text-gray-800"
-                >
-                  Cancelar
-                </Button>
-                <Button 
-                  color="primary" 
-                  onPress={handleSubmit}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6"
-                >
-                  Registrar Usuario
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
-    </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">Información Personal</h3>
+                  <p className="text-sm text-gray-600">Datos básicos del usuario</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-11">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                    <User className="w-4 h-4" />
+                    Nombres
+                  </label>
+                  <InputDinamic errors={errors} control={control} id="username" type="text" name="username" placeholder="Ingrese sus nombres" />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                    <User className="w-4 h-4" />
+                    Apellidos
+                  </label>
+                  <InputDinamic errors={errors} control={control} id="lastname" type="text" name="lastname" placeholder="Ingrese sus apellidos" />
+                </div>
+              </div>
+            </div>
+
+            {/* identificacion */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <CreditCard className="w-4 h-4 text-cuarto" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">Identificación</h3>
+                  <p className="text-sm text-gray-600">Documento de identidad</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-11">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                    <CreditCard className="w-4 h-4" />
+                    Tipo de Documento
+                  </label>
+                  <SelectSearchAutoCompleteDinamic data={documentTypesOptions} label="Seleccione tipo de documento" name="typeDocument" control={control} placeholder="Escribe para buscar..." errors={errors} className="w-full" radius="md" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                    <CreditCard className="w-4 h-4" />
+                    Número de Identificación
+                  </label>
+                  <InputDinamic errors={errors} control={control} id="identificationNumber" type="number" name="identificationNumber" placeholder="Ingrese su numero de identificacion" />
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              {/* Encabezado de sección */}
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <Mail className="w-4 h-4 text-cuarto" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">Información de Contacto</h3>
+                  <p className="text-sm text-gray-600">Datos para comunicación</p>
+                </div>
+              </div>
+
+              {/* Grid de inputs */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-11">
+                {/* Campo de Email */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                    <Mail className="w-4 h-4" />
+                    Correo Electrónico
+                  </label>
+                  <InputDinamic errors={errors} control={control} id="email" type="email" name="email" placeholder="Ingrese su correo" />
+                </div>
+
+                {/* Campo de Teléfono */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                    <Phone className="w-4 h-4" />
+                    Teléfono
+                  </label>
+                  <InputDinamic errors={errors} control={control} id="phone" type="number" name="phone" placeholder="Ingrese su numero telefonico" />
+                </div>
+
+                {/* Campo de Dirección (ancho completo) */}
+                <div className="space-y-2 md:col-span-2">
+                  <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                    <MapPin className="w-4 h-4" />
+                    Dirección
+                  </label>
+                  <InputDinamic errors={errors} control={control} id="address" type="text" name="address" placeholder="Ingrese su direccion" />
+                </div>
+              </div>
+            </div>
+
+            {/* Contraseña */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <Lock className="w-4 h-4 text-cuarto" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">Seguridad</h3>
+                  <p className="text-sm text-gray-600">Configuración de acceso</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-11">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                    <Lock className="w-4 h-4" />
+                    Contraseña
+                  </label>
+                  <InputDinamic
+                    errors={errors}
+                    control={control}
+                    id="password"
+                    type={isVisible ? "text" : "password"}
+                    name="password"
+                    placeholder="Contraseña segura"
+                    icon={
+                      <button aria-label="toggle password visibility" type="button" onClick={() => setIsVisible(!isVisible)} className="focus:outline-none p-1 hover:bg-gray-100 rounded-md transition-colors">
+                        {isVisible ? <EyeOff className="w-4 h-4 text-gray-400" /> : <Eye className="w-4 h-4 text-gray-400" />}
+                      </button>
+                    }
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                    <Lock className="w-4 h-4" />
+                    Confirmar Contraseña
+                  </label>
+                  <InputDinamic
+                    errors={errors}
+                    control={control}
+                    id="password_confirmation"
+                    type={isVisibleConfirma ? "text" : "password"}
+                    name="password_confirmation"
+                    placeholder="Confirmar contraseña"
+                    icon={
+                      <button aria-label="toggle password visibility" type="button" onClick={() => setIsVisibleConfirma(!isVisibleConfirma)} className="focus:outline-none p-1 hover:bg-gray-100 rounded-md transition-colors">
+                        {isVisibleConfirma ? <EyeOff className="w-4 h-4 text-gray-400" /> : <Eye className="w-4 h-4 text-gray-400" />}
+                      </button>
+                    }
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* botones de accion */}
+            <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200">
+              <button type="button" onClick={onClose} className="flex-1 sm:flex-none px-6 py-3 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium focus:ring-2 focus:ring-gray-200 focus:outline-none">
+                Cancelar
+              </button>
+
+              <button type="submit" disabled={isLoadingRegister || isLoadingUpdate} className="flex-1 sm:flex-none px-6 py-3 bg-accents-500 text-white rounded-lg hover:bg-accents-600 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-blue-500 focus:outline-none flex items-center justify-center gap-2">
+                {isLoadingRegister || isLoadingUpdate ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Procesando...
+                  </>
+                ) : (
+                  <>
+                    {user ? (
+                      <>
+                        <Edit3 className="w-4 h-4" />
+                        Actualizar Usuario
+                      </>
+                    ) : (
+                      <>
+                        <UserPlus className="w-4 h-4" />
+                        Registrar Usuario
+                      </>
+                    )}
+                  </>
+                )}
+              </button>
+
+            </div>
+          </form>
+        </div>
+      </div>
+    </>
   );
 };
 
-export default RegistrationForm;
+export default RegisterUserComponent;

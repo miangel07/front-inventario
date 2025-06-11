@@ -16,7 +16,7 @@ interface props<T> {
     dataToEdit?: T;
 }
 
-export const ModalNextui = <T,>({
+export const ModalDinamic = <T,>({
     titleButon,
     children,
     className,

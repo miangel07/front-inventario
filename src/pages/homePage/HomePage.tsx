@@ -1,4 +1,5 @@
 import LayoutDefault from "@/layouts/Layoutdefault";
+import { Checkbox } from "@heroui/react";
 
 type Props = {};
 
@@ -7,6 +8,7 @@ const HomePage = (props: Props) => {
     <>
       <LayoutDefault>
         <div>HOme page</div>
+        <Checkbox  />
       </LayoutDefault>
     </>
   );
