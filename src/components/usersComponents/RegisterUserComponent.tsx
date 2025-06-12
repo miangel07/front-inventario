@@ -9,7 +9,7 @@ import { UserSchemaZod } from "@/validations/userValidation/userSchemaZod";
 import { InputDinamic } from "../DYNAMIC_COMPONENTS/InputDinamic";
 import { documentTypesOptions } from "@/utils/usersUtils/registerUserUtils";
 import SelectSearchAutoCompleteDinamic from "../DYNAMIC_COMPONENTS/SelectSearchAutoCompleteDinamic";
-import { Button } from "@heroui/react";
+
 
 const RegisterUserComponent = ({ onClose, user }: RegisterUserProps) => {
   const referenciaIdtostat = useRef<Id | null>(null);

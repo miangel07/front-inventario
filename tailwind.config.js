@@ -128,5 +128,33 @@ export default {
     },
   },
   darkMode: "class",
-  plugins: [heroui()],
+  plugins: [heroui({
+      themes: {
+        light: {
+          colors: {
+            // Personaliza los colores aquí
+            primary: {
+              DEFAULT: "#10b981", // Indigo más intenso
+              foreground: "#ffffff",
+            },
+            secondary: {
+              DEFAULT: "#10B981", // Verde esmeralda
+              foreground: "#ffffff",
+            },
+            success: {
+              DEFAULT: "#059669", // Verde más oscuro
+              foreground: "#ffffff",
+            },
+            warning: {
+              DEFAULT: "#F59E0B", // Ámbar
+              foreground: "#000000",
+            },
+            danger: {
+              DEFAULT: "#EF4444", // Rojo más brillante
+              foreground: "#ffffff",
+            },
+          },
+        },
+      },
+    }),],
 };
