@@ -13,31 +13,28 @@ export interface UsersType {
   createDate?: string; 
   rolId?: number; 
 }
-
-
-
-export interface UsersPaginados {
-  current_page: number;
-  last_page: number;
-  per_page: number;
+// Tipado para la metadata de paginación
+export interface UsersPaginationMeta {
   total: number;
-  from: number;
-  to: number;
+  page: number;
+  limit: number;
+  lastPage: number;
 }
-
+// Tipado para los parámetros de consulta
 export interface GetUsersParams {
   page?: number;
   search?: string;
-  per_page?: number;
+  limit?: number; // En Nest.js usas 'limit' en lugar de 'per_page'
 }
 
 export interface UsersResponse {
   message: string;
   data: UsersType[];
-  pagination: UsersPaginados;
+  meta: UsersPaginationMeta;
 }
 
 export interface RegisterUserProps {
   onClose: () => void;
   user?: UsersType;
 }
+

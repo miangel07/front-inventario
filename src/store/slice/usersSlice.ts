@@ -12,13 +12,13 @@ export const UsersSlice = createApi({
     
     //listar usuarios
     getUsers: build.query<UsersResponse,GetUsersParams>({
-      query: ({page,search,per_page}) => ({
+      query: ({page,search,limit}) => ({
         url: "/users",
         method: "GET",
         params:{
           page,
           search,
-          per_page
+          limit
         },
       }),
       providesTags: ["users"],
