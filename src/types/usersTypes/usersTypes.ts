@@ -10,8 +10,9 @@ export interface UsersType {
   Status?: "active" | "inactive"; 
   typeDocument: "cc" | "ti" | "ce";
   email: string;
-  createDate?: string; 
-  rolId?: number; 
+  createDate?: string | undefined; 
+  rolId?: number;
+  password_confirmation?: string 
 }
 // Tipado para la metadata de paginación
 export interface UsersPaginationMeta {
@@ -35,6 +36,7 @@ export interface UsersResponse {
 
 export interface RegisterUserProps {
   onClose: () => void;
+  isOpen?: boolean;
   user?: UsersType;
 }
 

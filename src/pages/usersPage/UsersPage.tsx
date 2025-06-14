@@ -10,7 +10,7 @@ import { TableDinamic } from "@/components/DYNAMIC_COMPONENTS/TableDinamic";
 const UsersPage = () => {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(5); 
+  const [limit, setLimit] = useState(4); 
 
   const { 
     usersData,
@@ -35,7 +35,7 @@ const UsersPage = () => {
     <LayoutDefault>
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">Gestión de Usuarios</h1>
+          <h1 className="text-2xl font-bold text-primarys-500 font-roboto">Gestión de Usuarios</h1>
           
           <ModalDinamic
             titleModal='Registro de Usuario'

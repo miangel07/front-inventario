@@ -1,10 +1,16 @@
+import { ModalDinamic } from "@/components/DYNAMIC_COMPONENTS/ModalDinamic";
+import DetailsUserComponent from "@/components/usersComponents/DetailsUserComponent";
+import RegisterUserComponent from "@/components/usersComponents/RegisterUserComponent";
 import { useGetUsersQuery, useUpdateUsersStateMutation } from "@/store/slice/usersSlice";
-import { Button, Checkbox, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react";
-import { Edit, Eye, MoreVertical } from "lucide-react";
+
+import { Checkbox } from "@heroui/react";
+import { Edit, Eye } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { Id, toast } from "react-toastify";
 
 export const useListUsersHook = ({ page = 1, search = "", limit = 10 }: { page?: number; search?: string; limit?: number }) => {
+
+
   const toastRefListar = useRef<Id | null>(null);
 
   const referenciaIdtostat = useRef<Id | null>(null);
@@ -17,8 +23,11 @@ export const useListUsersHook = ({ page = 1, search = "", limit = 10 }: { page?:
 
     const [updateUserStatus, { data: dataUpdateUserStatus, isSuccess: isSuccessUpdateUserStatus, isError: isErrorUpdateUserStatus, error: errorUpdateUserStatus }] = useUpdateUsersStateMutation();
 
-  const pagination = data?.meta; // Nest.js usa "meta" en lugar de "pagination"
 
+
+
+
+  const pagination = data?.meta; 
   useEffect(() => {
     if (isLoading && !toastRefListar.current) {
       toastRefListar.current = toast.loading("Cargando usuarios...");
@@ -129,8 +138,9 @@ export const useListUsersHook = ({ page = 1, search = "", limit = 10 }: { page?:
       <Checkbox 
         radius="full" 
         size="lg" 
+        color="secondary" 
         isSelected={user.Status === "active"} 
-        onChange={() => UserStatus(user.id as number, user.username, user.Status as string)} 
+        onChange={() => UserStatus(user.id as number, user.username, user.Status as string)}
 
       />
     ),
@@ -140,43 +150,35 @@ export const useListUsersHook = ({ page = 1, search = "", limit = 10 }: { page?:
     Status: (
       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
         user.Status === 'active' 
-          ? 'bg-green-100 text-green-800' 
-          : 'bg-red-100 text-red-800'
+          ? 'bg-accents-100 text-accents-800' 
+          : 'bg-dangers-100 text-dangers-800'
       }`}>
         {user.Status === 'active' ? 'Activo' : 'Inactivo'}
       </span>
     ),
     email: user.email,
-    actions: (
-      <Dropdown>
-        <DropdownTrigger>
-          <Button
-            isIconOnly
-            size="sm"
-            variant="light"
-            className="text-default-400"
-          >
-            <MoreVertical className="h-4 w-4" />
-          </Button>
-        </DropdownTrigger>
-        <DropdownMenu aria-label="Acciones del usuario">
-          <DropdownItem
-            key="details"
-            startContent={<Eye className="h-4 w-4" />}
-            // onPress={() => handleViewDetails(user.id as number)}
-          >
-            Detalles
-          </DropdownItem>
-          <DropdownItem
-            key="edit"
-            startContent={<Edit className="h-4 w-4" />}
-            // onPress={() => handleEditUser(user.id as number)}
-          >
-            Editar
-          </DropdownItem>
-        </DropdownMenu>
-      </Dropdown>
-    ),
+ actions: (
+  <>
+
+      <ModalDinamic 
+        titleButon={<Eye size={15} className="cursor-pointer" />}
+        sizeModal="5xl" 
+        titleModal="Detalles de usuario" 
+        dataToEdit={user}
+        children={() => (<DetailsUserComponent  user={user}/>)}
+        className="bg-white font-roboto"
+      /> 
+
+      <ModalDinamic 
+        titleButon={<Edit size={15} className="cursor-pointer" />}
+        sizeModal="4xl" 
+        titleModal="Actualizar usuario" 
+        dataToEdit={user}
+        children={(onClose) => <RegisterUserComponent onClose={onClose} user={user} />}
+        className="bg-white font-roboto"
+      /> 
+  </>
+),
   })) || [];
 
   return {

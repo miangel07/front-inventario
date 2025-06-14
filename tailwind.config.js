@@ -37,6 +37,10 @@ export default {
       perspective: {
         1000: "1000px", 
       },
+            fontFamily: {
+        inter: ['Inter', 'sans-serif'],
+        roboto: ['Roboto', 'sans-serif'],
+      },
       colors: {
 //         // Colores principales del sistema
         primarys: {
@@ -134,13 +138,17 @@ export default {
           colors: {
             // Personaliza los colores aquí
             primary: {
-              DEFAULT: "#10b981", // Indigo más intenso
+              DEFAULT: "#334155", // Indigo más intenso
               foreground: "#ffffff",
             },
             secondary: {
               DEFAULT: "#10B981", // Verde esmeralda
               foreground: "#ffffff",
             },
+                    checkbox: {
+          DEFAULT: "#8B5CF6", // Púrpura personalizado
+          foreground: "#ffffff",
+        },
             success: {
               DEFAULT: "#059669", // Verde más oscuro
               foreground: "#ffffff",
