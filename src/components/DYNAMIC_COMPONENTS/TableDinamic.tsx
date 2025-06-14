@@ -92,7 +92,7 @@ export const SearchBar = ({
                 onKeyDown={handleKeyDown}
                 onChange={handleChange}
                 startContent={
-                    <Search className="text-default-400 pointer-events-none flex-shrink-0" size={16} />
+                    <Search className="text-default-400 font-roboto pointer-events-none flex-shrink-0" size={16} />
                 }
                 endContent={
                     isLoading && (
@@ -133,8 +133,8 @@ export const TableDinamic = <T extends TableData>({
     emptyContent = (
         <div className="flex flex-col items-center justify-center py-12">
             <div className="text-6xl text-default-300 mb-4">📋</div>
-            <p className="text-default-500 text-lg font-medium">No hay datos disponibles</p>
-            <p className="text-default-400 text-sm">Intenta ajustar los filtros de búsqueda</p>
+            <p className="text-primarys-500 text-lg font-medium">No hay datos disponibles</p>
+            <p className="text-primarys-500 text-sm">Intenta ajustar los filtros de búsqueda</p>
         </div>
     ),
     pagination,
@@ -183,7 +183,7 @@ export const TableDinamic = <T extends TableData>({
                             <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-20">
                                 <div className="flex flex-col items-center gap-3">
                                     <Spinner size="lg" color="primary" />
-                                    <p className="text-default-600 text-sm">Cargando datos...</p>
+                                    <p className="text-primarys-500 text-sm">Cargando datos...</p>
                                 </div>
                             </div>
                         )}
@@ -226,7 +226,7 @@ export const TableDinamic = <T extends TableData>({
                                         key={index}
                                         className="text-center py-4 px-6"
                                     >
-                                        <span className="text-xs font-bold uppercase tracking-wider text-default-600">
+                                        <span className="text-lg font-bold uppercase tracking-wider text-default-600">
                                             {column.label}
                                         </span>
                                     </TableColumn>
