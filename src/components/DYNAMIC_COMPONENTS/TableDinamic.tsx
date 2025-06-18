@@ -226,7 +226,7 @@ export const TableDinamic = <T extends TableData>({
                                         key={index}
                                         className="text-center py-4 px-6"
                                     >
-                                        <span className="text-lg font-bold uppercase tracking-wider text-default-600">
+                                        <span className="text-sm font-roboto uppercase tracking-wider text-primarys-600">
                                             {column.label}
                                         </span>
                                     </TableColumn>

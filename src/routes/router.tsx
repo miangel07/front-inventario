@@ -3,6 +3,8 @@ import {  Routes } from "react-router-dom";
 import { RouteHomePage } from "./homeRoute/RouteHome";
 import { RouteLoginPage } from "./loginRoute/RouteLogin";
 import { RouteUsersPage } from "./usersRoute/RouteUsers";
+import { RouteWineriesPage } from "./wineriesRoute/RouteWineries";
+import { RouteCategoriesPage } from "./categoriesRoute/RouteCategories";
 
 
 
@@ -47,6 +49,8 @@ const Router = () => {
         {RouteLoginPage()}
         {RouteHomePage()}
         {RouteUsersPage()}
+        {RouteWineriesPage()}
+        {RouteCategoriesPage()}
         </Routes>
 
     </Suspense>

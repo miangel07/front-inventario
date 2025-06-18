@@ -43,14 +43,14 @@ export const menuItems: MenuItem[] = [
     key: 'categorias',
     label: 'Categorías',
     icon: Tags,
-    href: '/categorias',
+    href: '/categories',
     category: 'inventario'
   },
   {
     key: 'bodegas',
     label: 'Bodegas',
     icon: Building2,
-    href: '/bodegas',
+    href: '/wineries',
     category: 'inventario'
   },
   {

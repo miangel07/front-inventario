@@ -2,7 +2,6 @@ import { ModalDinamic } from "@/components/DYNAMIC_COMPONENTS/ModalDinamic";
 import DetailsUserComponent from "@/components/usersComponents/DetailsUserComponent";
 import RegisterUserComponent from "@/components/usersComponents/RegisterUserComponent";
 import { useGetUsersQuery, useUpdateUsersStateMutation } from "@/store/slice/usersSlice";
-
 import { Checkbox } from "@heroui/react";
 import { Edit, Eye } from "lucide-react";
 import { useEffect, useRef } from "react";
@@ -28,6 +27,7 @@ export const useListUsersHook = ({ page = 1, search = "", limit = 10 }: { page?:
 
 
   const pagination = data?.meta; 
+  
   useEffect(() => {
     if (isLoading && !toastRefListar.current) {
       toastRefListar.current = toast.loading("Cargando usuarios...");

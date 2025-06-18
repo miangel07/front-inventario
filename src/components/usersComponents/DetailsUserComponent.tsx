@@ -58,15 +58,15 @@ const DetailsUserComponent = ({ user }: Props) => {
           <Avatar
             size="lg"
             name={getInitials(user.username, user.lastname)}
-            className="bg-blue-100 text-blue-600 text-lg font-semibold"
+            className="bg-primarys-400 text-accents-800 text-lg font-semibold"
           />
           <div className="flex-1">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">
+                <h1 className="text-2xl font-bold text-primarys-700">
                   {user.username} {user.lastname}
                 </h1>
-                <p className="text-gray-600 text-sm">Usuario #{user.id}</p>
+                <p className="text-primarys-400 text-sm">Usuario #{user.id}</p>
               </div>
               <Chip
                 color={user.Status === 'active' ? 'success' : 'danger'}
@@ -87,7 +87,7 @@ const DetailsUserComponent = ({ user }: Props) => {
         <Card>
           <CardHeader>
             <div className="flex items-center gap-2">
-              <User className="w-5 h-5 text-blue-600" />
+              <User className="w-5 h-5 text-primarys-600" />
               <h2 className="text-lg font-semibold text-gray-900">Información Personal</h2>
             </div>
           </CardHeader>
@@ -121,7 +121,7 @@ const DetailsUserComponent = ({ user }: Props) => {
         <Card>
           <CardHeader>
             <div className="flex items-center gap-2">
-              <Mail className="w-5 h-5 text-green-600" />
+              <Mail className="w-5 h-5 text-primarys-600" />
               <h2 className="text-lg font-semibold text-gray-900">Contacto</h2>
             </div>
           </CardHeader>
@@ -160,7 +160,7 @@ const DetailsUserComponent = ({ user }: Props) => {
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-purple-600" />
+            <Calendar className="w-5 h-5 text-primarys-600" />
             <h2 className="text-lg font-semibold text-gray-900">Información del Sistema</h2>
           </div>
         </CardHeader>
