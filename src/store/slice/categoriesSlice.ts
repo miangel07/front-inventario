@@ -10,7 +10,7 @@ export const CategoriesSlice = createApi({
 
   endpoints: (build) => ({
     
-    //listar usuarios
+    //listar categorias
     getCategories: build.query<CategoriesResponse,GetCategoriesParams>({
       query: ({page,search,limit}) => ({
         url: "/category",
@@ -36,7 +36,7 @@ export const CategoriesSlice = createApi({
 
     }),
 
-    // //Registro usuario
+    // //Registro categorias
     registerCategories: build.mutation<
       string,
       CategoriesType
@@ -69,7 +69,7 @@ export const CategoriesSlice = createApi({
       },
     }),
 
-    // //actualizar usuario:
+    // //actualizar categorias:
     updateCategories: build.mutation<
       string,
       CategoriesType
@@ -102,13 +102,13 @@ export const CategoriesSlice = createApi({
       },
     }),
 
-    //actualizar estado bodega
-    updateCategoriesState: build.mutation<
+    //actualizar estado categorias
+    updateCategoryState: build.mutation<
       string,
       { id: number; status: string }
     >({
       query: ({ id, status }) => ({
-        url: `users/${id}/status`,
+        url: `category/${id}/status`,
         method: "PATCH",
         body: { status },
       }),
@@ -141,5 +141,5 @@ export const {
     useGetCategoriesQuery,
     useRegisterCategoriesMutation,
     useUpdateCategoriesMutation,
-
+    useUpdateCategoryStateMutation
 } = CategoriesSlice;

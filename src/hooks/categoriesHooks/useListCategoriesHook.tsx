@@ -1,6 +1,6 @@
 import RegisterCategoriesComponent from '@/components/CategoriesComponents/RegisterCategoriesComponent';
 import { ModalDinamic } from '@/components/DYNAMIC_COMPONENTS/ModalDinamic';
-import { useGetCategoriesQuery } from '@/store/slice/categoriesSlice';
+import { useGetCategoriesQuery, useUpdateCategoryStateMutation } from '@/store/slice/categoriesSlice';
 import { Checkbox } from '@heroui/react';
 import { Edit } from 'lucide-react';
 import { useEffect, useRef } from 'react'
@@ -12,11 +12,17 @@ const useListCategoriesHook = ({ page = 1, search = "", limit = 10 }: { page?: n
 
     const toastRefListar = useRef<Id | null>(null);
 
+    const referenciaIdtostat = useRef<Id | null>(null);
+
             const { data, isLoading, isError, error } = useGetCategoriesQuery({
               page,
               search,
               limit
             });
+
+
+                const [updateCategoryStatus, { data: dataUpdateCategoryStatus, isSuccess: isSuccessUpdateCategoryStatus, isError: isErrorUpdateCategoryStatus, error: errorUpdateCategoryStatus }] = useUpdateCategoryStateMutation();
+
 
               const pagination = data?.meta; 
 
@@ -36,6 +42,94 @@ const useListCategoriesHook = ({ page = 1, search = "", limit = 10 }: { page?: n
                   }, [isLoading, isError]);
 
 
+                      useEffect(() => {
+                      if (isSuccessUpdateCategoryStatus) {
+                        toast.dismiss(referenciaIdtostat.current!);
+                        toast.success(`${dataUpdateCategoryStatus}`);
+                      }
+                  
+                      if (isErrorUpdateCategoryStatus && Array.isArray(errorUpdateCategoryStatus)) {
+                        toast.dismiss(referenciaIdtostat.current!);
+                        errorUpdateCategoryStatus.map((e) => toast.error(`${e.message}`));
+                      }
+                    }, [isSuccessUpdateCategoryStatus, isErrorUpdateCategoryStatus, errorUpdateCategoryStatus]);
+
+
+                        const CategoryStatus = (id: number, NameCategory: string, currentStatus: string) => {
+                        try {
+                          if (id === 0) {
+                            return toast.error("Categorya no seleccionada");
+                          }
+                    
+                          // Determinar el nuevo estado (toggle)
+                          const newStatus = currentStatus === "active" ? "inactive" : "active";
+                    
+                          const confirmId = toast(
+                            () => (
+                              <div>
+                                <p>
+                                  ¿Está seguro de cambiar el estado del usuario <strong>{NameCategory}</strong>?
+                                </p>
+                                <div
+                                  style={{
+                                    marginTop: "10px",
+                                    display: "flex",
+                                    justifyContent: "flex-end",
+                                    gap: "10px",
+                                  }}
+                                >
+                                  <button
+                                    onClick={async () => {
+                                      toast.dismiss(confirmId);
+                                      referenciaIdtostat.current = toast.loading("Actualizando estado...");
+                                      try {
+                                        await updateCategoryStatus({ id, status: newStatus }).unwrap();
+                                      } catch (error) {
+                                        console.error("Error:", error);
+                                        toast.dismiss(referenciaIdtostat.current!);
+                                        toast.error("No se pudo actualizar el estado", {
+                                          position: "top-center",
+                                        });
+                                      }
+                                    }}
+                                    style={{
+                                      background: "green",
+                                      color: "white",
+                                      border: "none",
+                                      padding: "5px 10px",
+                                      borderRadius: "4px",
+                                    }}
+                                  >
+                                    Sí
+                                  </button>
+                                  <button
+                                    onClick={() => toast.dismiss(confirmId)}
+                                    style={{
+                                      background: "gray",
+                                      color: "white",
+                                      border: "none",
+                                      padding: "5px 10px",
+                                      borderRadius: "4px",
+                                    }}
+                                  >
+                                    No
+                                  </button>
+                                </div>
+                              </div>
+                            ),
+                            {
+                              autoClose: false,
+                              position: "top-center",
+                            }
+                          );
+                        } catch (error) {
+                          console.error("Error al intentar mostrar la confirmación:", error);
+                          toast.error("Ocurrió un error al mostrar la confirmación", {
+                            position: "top-center",
+                          });
+                        }
+                      };
+
 
                         const categoriesData = data?.data?.map((category) => ({
                           id: category.id,
@@ -45,6 +139,7 @@ const useListCategoriesHook = ({ page = 1, search = "", limit = 10 }: { page?: n
                               size="lg" 
                               color="secondary" 
                               isSelected={category.Status === "active"} 
+                                      onChange={() => CategoryStatus(category.id as number, category.NameCategory, category.Status as string)}
                             />
                           ),
                           NameCategory: category.NameCategory,

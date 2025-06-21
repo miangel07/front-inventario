@@ -24,7 +24,7 @@ export interface GetWineriesParams {
 
 export interface WineriesResponse {
   message: string;
-  cleanData: WineriesType[];
+  data: WineriesType[];
   meta: WineriesPaginationMeta;
 }
 

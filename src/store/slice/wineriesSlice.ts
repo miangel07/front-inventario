@@ -92,7 +92,7 @@ export const WineriesSlice = createApi({
       },
     }),
 
-    // //actualizar usuario:
+    // //actualizar bodega:
     updateWinerie: build.mutation<
       string,
       WineriesType
@@ -126,47 +126,38 @@ export const WineriesSlice = createApi({
     }),
 
     //actualizar estado bodega
-    // updateUsersState: build.mutation<
-    //   string,
-    //   { id: number; status: string }
-    // >({
-    //   query: ({ id, status }) => ({
-    //     url: `users/${id}/status`,
-    //     method: "PATCH",
-    //     body: { status },
-    //   }),
-    //   invalidatesTags: ["users"],
-    //   transformResponse: (response: { message: string }) => {
-    //     return response.message;
-    //   },
-    //   transformErrorResponse: (response: {
-    //     data?: { error?: errorDefaultApi[] };
-    //     status: number;
-    //   }): errorDefaultApi[] => {
-    //     if (response.data?.error?.length) {
-    //       return response.data.error.map((err) => ({
-    //         message: err.message,
-    //         field: err.field || "",
-    //       }));
-    //     }
-    //     return [
-    //       {
-    //         message: "Error de conexión con el servidor.",
-    //         field: "",
-    //       },
-    //     ];
-    //   },
-    // }),
+    updateWinerieState: build.mutation<
+      string,
+      { id: number; status: string }
+    >({
+      query: ({ id, status }) => ({
+        url: `category/${id}/status`,
+        method: "PATCH",
+        body: { status },
+      }),
+      invalidatesTags: ["users"],
+      transformResponse: (response: { message: string }) => {
+        return response.message;
+      },
+      transformErrorResponse: (response: {
+        data?: { error?: errorDefaultApi[] };
+        status: number;
+      }): errorDefaultApi[] => {
+        if (response.data?.error?.length) {
+          return response.data.error.map((err) => ({
+            message: err.message,
+            field: err.field || "",
+          }));
+        }
+        return [
+          {
+            message: "Error de conexión con el servidor.",
+            field: "",
+          },
+        ];
+      },
+    }),
 
-
-    // getUsers: build.query<UsersResponse, GetUsersParams>({
-    //   query: ({ page, search, limit }) => ({
-    //     url: "/users",
-    //     method: "GET",
-    //     params: { page, search, limit },
-    //   }),
-    //   providesTags: ["users"],
-    // }),
 
     // Nuevo endpoint para el Autocomplete (obtiene TODOS los usuarios)
     getAllUsersForSelect: build.query<{ key: number; label: string }[], void>({
@@ -218,5 +209,6 @@ export const {
 useGetWineriesQuery,
 useRegisterWinerieMutation,
 useUpdateWinerieMutation,
+useUpdateWinerieStateMutation,
 useGetAllUsersForSelectQuery
 } = WineriesSlice;
