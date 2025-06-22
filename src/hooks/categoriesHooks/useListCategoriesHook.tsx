@@ -139,7 +139,7 @@ const useListCategoriesHook = ({ page = 1, search = "", limit = 10 }: { page?: n
                               size="lg" 
                               color="secondary" 
                               isSelected={category.Status === "active"} 
-                                      onChange={() => CategoryStatus(category.id as number, category.NameCategory, category.Status as string)}
+                              onChange={() => CategoryStatus(category.id as number, category.NameCategory, category.Status as string)}
                             />
                           ),
                           NameCategory: category.NameCategory,
@@ -154,17 +154,7 @@ const useListCategoriesHook = ({ page = 1, search = "", limit = 10 }: { page?: n
                           ),
                        actions: (
                         <>
-                      
-{/*                             <ModalDinamic 
-                              titleButon={<Eye size={15} className="cursor-pointer" />}
-                              sizeModal="5xl" 
-                              titleModal="Detalles de usuario" 
-                              dataToEdit={category}
-                              children={() => (<DetailsWineriesComponent  category={category}/>)}
-                              className="bg-white font-roboto"
-                            />  */}
-                      
-                            <ModalDinamic 
+                          <ModalDinamic 
                               titleButon={<Edit size={15} className="cursor-pointer" />}
                               sizeModal="4xl" 
                               titleModal="Actualizar categoria" 
