@@ -131,7 +131,7 @@ export const WineriesSlice = createApi({
       { id: number; status: string }
     >({
       query: ({ id, status }) => ({
-        url: `category/${id}/status`,
+        url: `storage/${id}/status`,
         method: "PATCH",
         body: { status },
       }),

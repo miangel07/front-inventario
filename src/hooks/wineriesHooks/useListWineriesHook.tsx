@@ -10,7 +10,7 @@ import { Id, toast } from "react-toastify";
 export const useListWineriesHook = ({ page = 1, search = "", limit = 10 }: { page?: number; search?: string; limit?: number }) => {
   const toastRefListar = useRef<Id | null>(null);
 
-  // const referenciaIdtostat = useRef<Id | null>(null);
+  const referenciaIdtostat = useRef<Id | null>(null);
 
   const { data, isLoading, isError, error } = useGetWineriesQuery({
     page,
@@ -18,7 +18,7 @@ export const useListWineriesHook = ({ page = 1, search = "", limit = 10 }: { pag
     limit,
   });
 
-  // const [updateWinerieStatus, { data: dataUpdateUserStatus, isSuccess: isSuccessUpdateUserStatus, isError: isErrorUpdateUserStatus, error: errorUpdateUserStatus }] = useUpdateWinerieStateMutation();
+  const [updateWinerieStatus, { data: dataUpdateWinerieStatus, isSuccess: isSuccessUpdateWinerieStatus, isError: isErrorUpdateWinerieStatus, error: errorUpdateWinerieStatus }] = useUpdateWinerieStateMutation();
 
   const pagination = data?.meta;
 
@@ -37,6 +37,93 @@ export const useListWineriesHook = ({ page = 1, search = "", limit = 10 }: { pag
     }
   }, [isLoading, isError]);
 
+  useEffect(() => {
+    if (isSuccessUpdateWinerieStatus) {
+      toast.dismiss(referenciaIdtostat.current!);
+      toast.success(`${dataUpdateWinerieStatus}`);
+    }
+
+    if (isErrorUpdateWinerieStatus && Array.isArray(errorUpdateWinerieStatus)) {
+      toast.dismiss(referenciaIdtostat.current!);
+      errorUpdateWinerieStatus.map((e) => toast.error(`${e.message}`));
+    }
+  }, [isSuccessUpdateWinerieStatus, isErrorUpdateWinerieStatus, errorUpdateWinerieStatus]);
+
+  const WinerieStatus = (id: number, NameCategory: string, currentStatus: string) => {
+    try {
+      if (id === 0) {
+        return toast.error("Categorya no seleccionada");
+      }
+
+      // Determinar el nuevo estado (toggle)
+      const newStatus = currentStatus === "active" ? "inactive" : "active";
+
+      const confirmId = toast(
+        () => (
+          <div>
+            <p>
+              ¿Está seguro de cambiar el estado del usuario <strong>{NameCategory}</strong>?
+            </p>
+            <div
+              style={{
+                marginTop: "10px",
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: "10px",
+              }}
+            >
+              <button
+                onClick={async () => {
+                  toast.dismiss(confirmId);
+                  referenciaIdtostat.current = toast.loading("Actualizando estado...");
+                  try {
+                    await updateWinerieStatus({ id, status: newStatus }).unwrap();
+                  } catch (error) {
+                    console.error("Error:", error);
+                    toast.dismiss(referenciaIdtostat.current!);
+                    toast.error("No se pudo actualizar el estado", {
+                      position: "top-center",
+                    });
+                  }
+                }}
+                style={{
+                  background: "green",
+                  color: "white",
+                  border: "none",
+                  padding: "5px 10px",
+                  borderRadius: "4px",
+                }}
+              >
+                Sí
+              </button>
+              <button
+                onClick={() => toast.dismiss(confirmId)}
+                style={{
+                  background: "gray",
+                  color: "white",
+                  border: "none",
+                  padding: "5px 10px",
+                  borderRadius: "4px",
+                }}
+              >
+                No
+              </button>
+            </div>
+          </div>
+        ),
+        {
+          autoClose: false,
+          position: "top-center",
+        }
+      );
+    } catch (error) {
+      console.error("Error al intentar mostrar la confirmación:", error);
+      toast.error("Ocurrió un error al mostrar la confirmación", {
+        position: "top-center",
+      });
+    }
+  };
+
   const wineriesData =
     data?.data?.map((winerie) => ({
       id: winerie.id,
@@ -46,7 +133,7 @@ export const useListWineriesHook = ({ page = 1, search = "", limit = 10 }: { pag
           size="lg"
           color="secondary"
           isSelected={winerie.Status === "active"}
-          // onChange={() => UserStatus(winerie.id as number, winerie.username, winerie.Status as string)}
+          onChange={() => WinerieStatus(winerie.id as number, winerie.nameStorage, winerie.Status as string)}
         />
       ),
       nameStorage: winerie.nameStorage,
@@ -55,8 +142,6 @@ export const useListWineriesHook = ({ page = 1, search = "", limit = 10 }: { pag
       Status: <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${winerie.Status === "active" ? "bg-accents-100 text-accents-800" : "bg-dangers-100 text-dangers-800"}`}>{winerie.Status === "active" ? "Activo" : "Inactivo"}</span>,
       actions: (
         <>
-          <ModalDinamic titleButon={<Eye size={15} className="cursor-pointer" />} sizeModal="5xl" titleModal="Detalles de usuario" dataToEdit={winerie} children={() => <DetailsWineriesComponent winerie={winerie} />} className="bg-white font-roboto" />
-
           <ModalDinamic titleButon={<Edit size={15} className="cursor-pointer" />} sizeModal="4xl" titleModal="Actualizar usuario" dataToEdit={winerie} children={(onClose) => <RegisterWineriesComponent onClose={onClose} winerie={winerie} />} className="bg-white font-roboto" />
         </>
       ),
