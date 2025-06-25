@@ -10,7 +10,7 @@ export const WinerieSchemaZod = z.object({
   managerId: z.coerce.number().int().positive("El ID del manager debe ser un número positivo").nullable().optional()
 });
 
-// export type WineriesFormType = Omit<WineriesType, 'Status'>;
+
 
 // Tipo inferido desde el schema de Zod
 export type WineriesType = z.infer<typeof WinerieSchemaZod>;

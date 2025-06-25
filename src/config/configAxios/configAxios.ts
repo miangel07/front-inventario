@@ -1,5 +1,6 @@
 import { Props } from '@/types/configAxios/axiosConfigType';
 import axios, { AxiosError } from 'axios';
+
 export const axiosInstanceFormData = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL, // URL base de la API
   headers: {

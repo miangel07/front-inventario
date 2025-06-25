@@ -4,7 +4,10 @@ export const UserSchemaZod = z.object({
   id: z.coerce.number().positive().optional(),
   username: z.string().min(1, "El nombre de usuario es requerido"),
   lastname: z.string().min(1, "El apellido es requerido"),
-  password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
+    password: z.string()
+    .min(6, "La contraseña debe tener al menos 6 caracteres")
+    .regex(/[A-Z]/, "La contraseña debe contener al menos una mayúscula")
+    .regex(/[0-9]/, "La contraseña debe contener al menos un número"),
   phone: z.string().min(1, "El teléfono es requerido"),
   identificationNumber: z.coerce.number().positive("El número de identificación debe ser positivo"),
   address: z.string().min(1, "La dirección es requerida"),

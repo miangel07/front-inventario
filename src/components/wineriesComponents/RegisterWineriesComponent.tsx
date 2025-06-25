@@ -19,9 +19,9 @@ const RegisterWineriesComponent = ({ onClose, winerie }: RegisterWinerieProps) =
   const [updateUser, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate, isError: isErrorUpdate, error: errorUpdate }] = useUpdateWinerieMutation();
 
 
-const { data: usersResponse, isLoading: isLoadingOptionUser } = useGetUsersQuery({
+const { data: usersResponse } = useGetUsersQuery({
   page: 1,
-  limit: 1000 // Un número grande para obtener todos los registros sin paginación
+  limit: 10000
 });
 
   const isLoading = isLoadingRegister || isLoadingUpdate;
@@ -33,7 +33,7 @@ const {
   control,
   handleSubmit,
   formState: { errors },
-  reset
+  reset,
 } = useForm<WineriesType>({
   resolver: zodResolver(WinerieSchemaZod),
   defaultValues: {},

@@ -36,7 +36,7 @@ export const menuItems: MenuItem[] = [
     key: 'productos',
     label: 'Productos',
     icon: Package,
-    href: '/productos',
+    href: '/products',
     category: 'inventario'
   },
   {

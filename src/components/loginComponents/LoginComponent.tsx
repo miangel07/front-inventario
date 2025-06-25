@@ -1,7 +1,15 @@
-import { useState, useEffect } from 'react';
-import { Card, CardBody, Input, Button, Link, Divider } from '@heroui/react';
-import { Eye, EyeOff, Mail, Lock, User, Phone } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useLoginUserMutation } from "@/store/slice/loginSlice";
+import { errorDefaultApi } from "@/types/configAxios/axiosConfigType";
+import { LoginType, RegisterLoginProps } from "@/types/login/loginType";
+import { LoginTypeSchema } from "@/validations/loginValidation/loginSchemaZod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { Id, toast } from "react-toastify";
+import { InputDinamic } from "../DYNAMIC_COMPONENTS/InputDinamic";
+import { Eye, EyeOff, User } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button, Card, CardBody, Divider, Input } from "@heroui/react";
 
 interface Props {
   isLoginAction: boolean; 
@@ -9,41 +17,27 @@ interface Props {
 }
 
 
-const LoginComponent = ({ isLoginAction, initialDirection = 1 }: Props) => {
+const LoginComponent = ({ onClose }: RegisterLoginProps,{ isLoginAction, initialDirection = 1 }: Props) => {
+  const referenciaIdtostat = useRef<Id | null>(null);
+
+  const [loginUser, { isLoading, isSuccess, isError, error, data }] = useLoginUserMutation();
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<LoginType>({
+    resolver: zodResolver(LoginTypeSchema),
+    defaultValues: {},
+  });
+
   const [isLogin, setIsLogin] = useState(isLoginAction);
-  const [isVisible, setIsVisible] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [direction, setDirection] = useState(initialDirection);
+  const [isVisible, setIsVisible] = useState<boolean>(false);
+    const [direction, setDirection] = useState(initialDirection);
 
-  const backgroundImages = [
-    'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop',
-    'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=800&h=600&fit=crop',
-    'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=600&fit=crop',
-    'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=600&fit=crop'
-  ];
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => 
-        (prevIndex + 1) % backgroundImages.length
-      );
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [backgroundImages.length]);
-
-  const toggleVisibility = () => setIsVisible(!isVisible);
-
-  const handleFlip = (loginAction: boolean) => {
-    setDirection(loginAction ? -1 : 1);
-    setIsLogin(loginAction);
-  };
-
-  const handleSubmit = () => {
-    console.log(isLogin ? 'Login submitted' : 'Register submitted');
-  };
-
-  // Variantes de animación
-  const pageVariants = {
+      const pageVariants = {
     enter: (direction: number) => ({
       x: direction > 0 ? 300 : -300,
       opacity: 0
@@ -64,37 +58,127 @@ const LoginComponent = ({ isLoginAction, initialDirection = 1 }: Props) => {
     })
   };
 
+    const handleFlip = (loginAction: boolean) => {
+    setDirection(loginAction ? -1 : 1);
+    setIsLogin(loginAction);
+  };
+  
+
+//   useEffect(() => {
+//     console.log("Estado actual:", { isLoading, isSuccess, isError, error, data });
+
+//     if (isLoading) {
+//       referenciaIdtostat.current = toast.loading("Iniciando sesión...");
+//     }
+
+// if (isSuccess) {
+//   console.log("Mostrando éxito:", data); // ¿Se imprime esto?
+//   toast.dismiss(referenciaIdtostat.current!);
+//   toast.success(data); // Asegúrate de que esto se ejecuta
+//   onClose();
+// }
+
+//     if (isError) {
+//       console.log("Error recibido:", error); // Debug: Ver estructura del error
+//       toast.dismiss(referenciaIdtostat.current!);
+
+//       // Verifica si el error tiene la estructura transformada (errorDefaultApi[])
+// if (isError) {
+//   toast.dismiss(referenciaIdtostat.current!);
+
+//   // Caso 1: El error ya es un array (transformado por transformErrorResponse)
+//   if (Array.isArray(error)) {
+//     error.forEach((err) => toast.error(err.message));
+//   }
+//   // Caso 2: El error tiene un mensaje directo (ej: { message: "Error genérico" })
+//   else if (error && typeof error === 'object' && 'message' in error) {
+//     toast.error(error.message);
+//   }
+//   // Caso 3: Otros errores no controlados
+//   else {
+//     toast.error("Error de conexión o servidor");
+//   }
+// }else {
+//         toast.error("Error de conexión o servidor");
+//       }
+//     }
+//   }, [isLoading, isSuccess, isError, error, data, onClose]);
+
+
+useEffect(() => {
+  console.log("Estado actual:", { isLoading, isSuccess, isError, error, data });
+
+  if (isLoading) {
+    referenciaIdtostat.current = toast.loading("Iniciando sesión...");
+  }
+
+  if (isSuccess) {
+    console.log("Mostrando éxito:", data);
+    toast.dismiss(referenciaIdtostat.current!);
+    
+    // Añade un pequeño delay para asegurar que el toast se muestra
+    setTimeout(() => {
+      toast.success(data);
+      onClose();
+    }, 100);
+  }
+
+  if (isError) {
+    console.log("Error recibido:", error);
+    toast.dismiss(referenciaIdtostat.current!);
+
+    if (Array.isArray(error)) {
+      error.forEach((err) => toast.error(err.message));
+    } 
+    else if (error && typeof error === 'object' && 'message' in error) {
+      toast.error(error.message);
+    }
+    else {
+      toast.error("Error de conexión o servidor");
+    }
+  }
+}, [isLoading, isSuccess, isError, error, data, onClose]);
+
+
+
+  const onSubmit = async (data: LoginType) => {
+    try {
+      await loginUser(data).unwrap();
+    } catch (error) {
+      console.error("Error: ", error);
+    }
+  };
+
   return (
-    <div className="min-h-screen flex bg-gray-50 overflow-hidden">
-      {/* Panel Izquierdo - Formulario */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
-        <div className="w-full max-w-md">
-          <div className="mb-8 text-center">
-            <AnimatePresence mode="wait">
-              <motion.div
+    <>
+
+<div className="w-full lg:w-1/2 flex items-center justify-center p-8">
+<div className="w-full max-w-md">
+  <div className="mb-8 text-center">
+<AnimatePresence mode='wait'>
+<motion.div
                 key={isLogin ? 'login-title' : 'register-title'}
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: 20, opacity: 0 }}
                 transition={{ duration: 0.2 }}
-              >
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                  {isLogin ? 'Bienvenido' : 'Crear Cuenta'}
+>
+                  <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                  {isLogin ? 'Bienvenido' : 'Recuperar contraseña'}
                 </h1>
                 <p className="text-gray-600">
                   {isLogin 
                     ? 'Inicia sesión en tu cuenta' 
-                    : 'Completa tus datos para registrarte'
+                    : 'Completa tus datos para recuperar contraseña'
                   }
                 </p>
-              </motion.div>
-            </AnimatePresence>
-          </div>
 
-          {/* Contenedor de formularios con animación */}
-          <div className="relative h-[28rem] overflow-hidden">
-            <AnimatePresence custom={direction} mode="wait">
-              <motion.div
+</motion.div>
+</AnimatePresence>
+  </div>
+  <div className="relative h-[28rem] overflow-hidden">
+<AnimatePresence custom={direction} mode="wait">
+<motion.div
                 key={isLogin ? 'login' : 'register'}
                 custom={direction}
                 variants={pageVariants}
@@ -102,219 +186,86 @@ const LoginComponent = ({ isLoginAction, initialDirection = 1 }: Props) => {
                 animate="center"
                 exit="exit"
                 className="absolute w-full h-full"
-              >
-                <Card shadow="lg" className="w-full h-full overflow-hidden">
-                  <CardBody className="p-8 h-full overflow-y-auto">
-                    <div className="space-y-6">
-                      {isLogin ? (
+>
+
+                  <Card shadow="lg" className="w-full h-full overflow-hidden">
+                    <CardBody className="p-8 h-full overflow-y-auto">
+                      <div className="space-y-6">
+                      {isLogin?(
                         <>
-                          {/* Formulario de Login */}
-                          <Input
-                            type="email"
-                            label="Correo electrónico"
-                            placeholder="correo@ejemplo.com"
-                            startContent={<Mail className="w-4 h-4 text-gray-400" />}
-                            variant="bordered"
-                            size="lg"
-                            required
-                          />
+                              <form onSubmit={handleSubmit(onSubmit)}>
+        <InputDinamic 
+        errors={errors} 
+        control={control} 
+        id="email" 
+        type="text" 
+        name="email" 
+        placeholder="ingrese su correo" />
 
-                          <Input
-                            label="Contraseña"
-                            placeholder="Ingresa tu contraseña"
-                            startContent={<Lock className="w-4 h-4 text-gray-400" />}
-                            endContent={
-                              <button
-                                className="focus:outline-none"
-                                type="button"
-                                onClick={toggleVisibility}
-                              >
-                                {isVisible ? (
-                                  <EyeOff className="w-4 h-4 text-gray-400" />
-                                ) : (
-                                  <Eye className="w-4 h-4 text-gray-400" />
-                                )}
-                              </button>
-                            }
-                            type={isVisible ? "text" : "password"}
-                            variant="bordered"
-                            size="lg"
-                            required
-                          />
+        <InputDinamic
+          errors={errors}
+          control={control}
+          id="password"
+          type={isVisible ? "text" : "password"}
+          name="password"
+          placeholder="Contraseña "
+          icon={
+            <button aria-label="toggle password visibility" type="button" onClick={() => setIsVisible(!isVisible)} className="focus:outline-none p-1 hover:bg-gray-100 rounded-md transition-colors">
+              {isVisible ? <EyeOff className="w-4 h-4 text-gray-400" /> : <Eye className="w-4 h-4 text-gray-400" />}
+            </button>
+          }
+        />
 
-                          <div className="flex justify-end">
-                            <Link 
-                              href="#" 
-                              size="sm" 
-                              className="text-blue-600 hover:text-blue-800"
-                            >
-                              ¿Olvidaste tu contraseña?
-                            </Link>
-                          </div>
+  <button
+    type="submit"
+    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+  >
+    Enviar
+  </button>
 
-                          <Button
-                            color="primary"
-                            size="lg"
-                            className="w-full bg-blue-600 hover:bg-blue-700"
-                            onClick={handleSubmit}
-                          >
-                            Iniciar Sesión
-                          </Button>
+      </form>
+
                         </>
-                      ) : (
-                        <>
-                          {/* Formulario de Registro */}
-                          <Input
-                            type="text"
-                            label="Nombre completo"
-                            placeholder="Ingresa tu nombre"
-                            startContent={<User className="w-4 h-4 text-gray-400" />}
-                            variant="bordered"
-                            size="lg"
-                            required
-                          />
-                          <Input
-                            type="tel"
-                            label="Teléfono"
-                            placeholder="Ingresa tu teléfono"
-                            startContent={<Phone className="w-4 h-4 text-gray-400" />}
-                            variant="bordered"
-                            size="lg"
-                            required
-                          />
-                          <Input
-                            type="email"
-                            label="Correo electrónico"
-                            placeholder="correo@ejemplo.com"
-                            startContent={<Mail className="w-4 h-4 text-gray-400" />}
-                            variant="bordered"
-                            size="lg"
-                            required
-                          />
-                          <Input
-                            label="Contraseña"
-                            placeholder="Ingresa tu contraseña"
-                            startContent={<Lock className="w-4 h-4 text-gray-400" />}
-                            endContent={
-                              <button
-                                className="focus:outline-none"
-                                type="button"
-                                onClick={toggleVisibility}
-                              >
-                                {isVisible ? (
-                                  <EyeOff className="w-4 h-4 text-gray-400" />
-                                ) : (
-                                  <Eye className="w-4 h-4 text-gray-400" />
-                                )}
-                              </button>
-                            }
-                            type={isVisible ? "text" : "password"}
-                            variant="bordered"
-                            size="lg"
-                            required
-                          />
-                          <Input
-                            label="Confirmar contraseña"
-                            placeholder="Confirma tu contraseña"
-                            startContent={<Lock className="w-4 h-4 text-gray-400" />}
-                            type={isVisible ? "text" : "password"}
-                            variant="bordered"
-                            size="lg"
-                            required
-                          />
-
-                          <Button
-                            color="primary"
-                            size="lg"
-                            className="w-full bg-blue-600 hover:bg-blue-700"
-                            onClick={handleSubmit}
-                          >
-                            Crear Cuenta
-                          </Button>
-                        </>
+                      ):(
+                                                  <Input
+                                                    type="text"
+                                                    label="Nombre completo"
+                                                    placeholder="Ingresa tu nombre"
+                                                    startContent={<User className="w-4 h-4 text-gray-400" />}
+                                                    variant="bordered"
+                                                    size="lg"
+                                                    required
+                                                  />
                       )}
-
-                      <Divider className="my-6" />
-
+                      <Divider className="my-6"/>
                       <div className="text-center">
                         <span className="text-gray-600 text-sm">
                           {isLogin ? '¿No tienes una cuenta?' : '¿Ya tienes una cuenta?'}
                         </span>
-                        <Button
-                          variant="light"
-                          color="primary"
-                          size="sm"
-                          className="ml-2 text-blue-600 hover:text-blue-800"
-                          onClick={() => handleFlip(!isLogin)}
-                        >
-                          {isLogin ? 'Registrarse' : 'Iniciar Sesión'}
-                        </Button>
+                                                <Button
+                                                  variant="light"
+                                                  color="primary"
+                                                  size="sm"
+                                                  className="ml-2 text-blue-600 hover:text-blue-800"
+                                                  onClick={() => handleFlip(!isLogin)}
+                                                >
+                                                  {isLogin ? 'Recuperar contraseña' : 'Iniciar Sesión'}
+                                                </Button>
                       </div>
-                    </div>
-                  </CardBody>
-                </Card>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        </div>
-      </div>
+                      </div>
 
-      {/* Panel Derecho - Imágenes */}
-      <div className="hidden lg:block lg:w-1/2 relative overflow-hidden">
-        <div className="absolute inset-0">
-          {backgroundImages.map((image, index) => (
-            <div
-              key={index}
-              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                index === currentImageIndex ? 'opacity-100' : 'opacity-0'
-              }`}
-              style={{
-                backgroundImage: `url(${image})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-              }}
-            />
-          ))}
-        </div>
-        
-        <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={isLogin ? 'login-content' : 'register-content'}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-              className="text-center text-white p-8"
-            >
-              <h2 className="text-4xl font-bold mb-4">
-                {isLogin ? 'Conecta con tu equipo' : 'Únete a nosotros'}
-              </h2>
-              <p className="text-xl opacity-90 max-w-md">
-                {isLogin 
-                  ? 'Accede a todas las herramientas que necesitas para colaborar de manera efectiva'
-                  : 'Forma parte de una comunidad que está transformando la manera de trabajar'
-                }
-              </p>
-            </motion.div>
-          </AnimatePresence>
-        </div>
+</CardBody>
+</Card>
+</motion.div>
+</AnimatePresence>
+  </div>
 
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2">
-          {backgroundImages.map((_, index) => (
-            <button
-              key={index}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                index === currentImageIndex 
-                  ? 'bg-white' 
-                  : 'bg-white bg-opacity-50 hover:bg-opacity-75'
-              }`}
-              onClick={() => setCurrentImageIndex(index)}
-            />
-          ))}
-        </div>
-      </div>
-    </div>
+</div>
+
+</div>
+
+
+    </>
   );
 };
 

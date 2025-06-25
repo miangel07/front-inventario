@@ -133,7 +133,7 @@ const SelectSearchAutoCompleteDinamic = ({
     onSelectionChange,
     onInputChange, 
     onBlurCustom,
-    valueType = 'string', // Valor por defecto
+    valueType = 'string',
 }: PropsAutoComplete) => {
 
     return (
@@ -147,15 +147,28 @@ const SelectSearchAutoCompleteDinamic = ({
                     isRequired={isRequired}
                     className={`${className} truncate font-roboto line-clamp-1`}
                     defaultItems={data}
-                    selectedKey={value !== null && value !== undefined ? String(value) : ''}
+                                        selectedKey={
+                        value !== null && value !== undefined 
+                            ? valueType === 'number' 
+                                ? String(value) // Autocomplete espera string, pero luego lo convertiremos
+                                : String(value)
+                            : ''
+                    }
                     onBlur={() => {
                       
                         if (onBlurCustom) onBlurCustom();
                     }}
                     onSelectionChange={(val) => {
-                        onChange(val || ''); 
+                        const finalValue = val 
+                            ? valueType === 'number' 
+                                ? Number(val) 
+                                : val
+                            : '';
+                        
+                        onChange(finalValue);
+                        
                         if (onSelectionChange) {
-                            onSelectionChange(val as string | number);
+                            onSelectionChange(finalValue as string | number);
                         }
                     }}
                     onInputChange={(value) => {
