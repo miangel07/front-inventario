@@ -57,7 +57,7 @@ export const menuItems: MenuItem[] = [
     key: 'unidades-medida',
     label: 'Unidades de Medida',
     icon: Ruler,
-    href: '/unitOfMeasurementsPage',
+    href: '/unitOfMeasurements',
     category: 'inventario'
   },
 

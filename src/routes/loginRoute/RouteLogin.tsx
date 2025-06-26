@@ -6,7 +6,7 @@ const LoginPage = lazy(() => import("@/pages/loginPage/LoginPage"))
 export const RouteLoginPage = () => {
     return (
         <>
-            <Route element={<LoginPage />} path="/" />
+            <Route element={<LoginPage />} path="/login" />
         </>
     )
 

@@ -1,7 +1,10 @@
 import { baseQueryconfig } from "@/config/configAxios/configAxios";
 import { errorDefaultApi } from "@/types/configAxios/axiosConfigType";
-import { LoginType, LoginUserConfirm } from "@/types/login/loginType";
+import { LoginResponse, LoginType, LoginUserConfirm } from "@/types/login/loginType";
 import { createApi } from "@reduxjs/toolkit/query/react";
+
+
+
 
 export const LoginSlice = createApi({
   reducerPath: "login",
@@ -9,20 +12,17 @@ export const LoginSlice = createApi({
   tagTypes: ["login"],
 
   endpoints: (build) => ({
-    
-    //Login User 
-    loginUser: build.mutation<
-      string,
-      LoginType
-    >({
+    // Login User - CORREGIDO
+    loginUser: build.mutation<LoginResponse, LoginType>({
       query: (login) => ({
         url: "/auth/login",
         method: "POST",
         body: login,
       }),
       invalidatesTags: ["login"],
-      transformResponse: (response: { message: string }) => {
-        return response.message;
+      
+      transformResponse: (response: LoginResponse) => {
+        return response;
       },
       transformErrorResponse: (response: {
         data: { error: errorDefaultApi[]; message: string };
@@ -43,45 +43,84 @@ export const LoginSlice = createApi({
       },
     }),
 
-    //login user confirm
-        // //Login User 
-    loginUserConfirm: build.mutation<
-      string,
-      LoginUserConfirm
-    >({
-      query: (login) => ({
-        url: "/auth/confirm-storage",
-        method: "POST",
-        body: login,
-      }),
-      invalidatesTags: ["login"],
-      transformResponse: (response: { message: string }) => {
-        return response.message;
+    // Login user confirm
+    // loginUserConfirm: build.mutation<string, LoginUserConfirm>({
+    //   query: (login) => ({
+    //     url: "/auth/confirm-storage",
+    //     method: "POST",
+    //     body: login,
+    //   }),
+    //   invalidatesTags: ["login"],
+    //   transformResponse: (response: { message: string }) => {
+    //     return response.message;
+    //   },
+    //   transformErrorResponse: (response: {
+    //     data: { error: errorDefaultApi[]; message: string };
+    //     status: number;
+    //   }): errorDefaultApi[] => {
+    //     if (response.data?.error && Array.isArray(response.data?.error)) {
+    //       return response.data.error.map((err) => ({
+    //         message: err.message,
+    //         field: err.field || "",
+    //       }));
+    //     }
+    //     return [
+    //       {
+    //         message: `${response.data?.message}`,
+    //         field: "",
+    //       },
+    //     ];
+    //   },
+    // }),
+
+
+
+    // En LoginSlice.ts
+loginUserConfirm: build.mutation<LoginResponse, LoginUserConfirm>({
+  query: (login) => ({
+    url: "/auth/confirm-storage",
+    method: "POST",
+    body: login,
+  }),
+  invalidatesTags: ["login"],
+  transformResponse: (response: LoginResponse) => {
+    return response;
+  },
+  transformErrorResponse: (response: {
+    data: { error: errorDefaultApi[]; message: string };
+    status: number;
+  }): errorDefaultApi[] => {
+    if (response.data?.error && Array.isArray(response.data?.error)) {
+      return response.data.error.map((err) => ({
+        message: err.message,
+        field: err.field || "",
+      }));
+    }
+    return [
+      {
+        message: `${response.data?.message}`,
+        field: "",
       },
-      transformErrorResponse: (response: {
-        data: { error: errorDefaultApi[]; message: string };
-        status: number;
-      }): errorDefaultApi[] => {
-        if (response.data?.error && Array.isArray(response.data?.error)) {
-          return response.data.error.map((err) => ({
-            message: err.message,
-            field: err.field || "",
-          }));
-        }
-        return [
-          {
-            message: `${response.data?.message}`,
-            field: "",
-          },
-        ];
+    ];
+  },
+}),
+
+
+
+
+
+    logoutUser: build.mutation<void, void>({
+      queryFn: async () => {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('user');
+        return { data: undefined };
       },
     }),
-
-
   }),
 });
 
 export const {
-    useLoginUserMutation,
-    useLoginUserConfirmMutation
+  useLoginUserMutation,
+  useLoginUserConfirmMutation,
+  useLogoutUserMutation
 } = LoginSlice;

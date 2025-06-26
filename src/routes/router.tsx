@@ -7,6 +7,7 @@ import { RouteWineriesPage } from "./wineriesRoute/RouteWineries";
 import { RouteCategoriesPage } from "./categoriesRoute/RouteCategories";
 import { RouteUnitOfMeasurementsPage } from "./unit_of_measurement/RouteUnitOfMeasurement";
 import { RouteProductsPage } from "./productsRoute/RouteProducts";
+import { RouteUnauthorizedPage } from "./RouteUnauthorizedPage";
 
 
 
@@ -55,6 +56,7 @@ const Router = () => {
         {RouteCategoriesPage()}
         {RouteUnitOfMeasurementsPage()}
         {RouteProductsPage()}
+        {RouteUnauthorizedPage()}
         </Routes>
 
     </Suspense>
