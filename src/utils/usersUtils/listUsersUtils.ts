@@ -15,3 +15,15 @@ export const columnsUsers:{
     // {key:'createDate',label:'FECHA CREACION'},
 ]
 
+export const columnsRollen:{
+    key:string,
+    label:string
+}[]=[
+    {key:'active',label:''},
+    {key:'nameRole',label:'ROL'},
+    {key:'Status',label:'ESTADO'},
+    {key:'actions',label:'ACCIONES'}
+]
+
+
+

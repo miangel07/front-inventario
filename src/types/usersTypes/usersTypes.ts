@@ -1,4 +1,3 @@
-
 export interface UsersType {
   id?: number; 
   username: string;
@@ -25,7 +24,9 @@ export interface UsersPaginationMeta {
 export interface GetUsersParams {
   page?: number;
   search?: string;
-  limit?: number; // En Nest.js usas 'limit' en lugar de 'per_page'
+  limit?: number;
+  enabled?:boolean
+  
 }
 
 export interface UsersResponse {
@@ -40,3 +41,36 @@ export interface RegisterUserProps {
   user?: UsersType;
 }
 
+
+
+export interface RollenType {
+  id?: number; 
+  nameRol: string;
+  Status?: "active" | "inactive";
+}
+// Tipado para la metadata de paginación
+export interface RollenPaginationMeta {
+  total: number;
+  page: number;
+  limit: number;
+  lastPage: number;
+}
+// Tipado para los parámetros de consulta
+export interface GetRollenParams {
+  page?: number;
+  search?: string;
+  limit?: number; 
+  enabled?:boolean
+}
+
+export interface RollenResponse {
+  message: string;
+  data: RollenType[];
+  meta: RollenPaginationMeta;
+}
+
+export interface RegisterRollenProps {
+  onClose: () => void;
+  isOpen?: boolean;
+  rolle?: RollenType;
+}

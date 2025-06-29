@@ -43,39 +43,6 @@ export const LoginSlice = createApi({
       },
     }),
 
-    // Login user confirm
-    // loginUserConfirm: build.mutation<string, LoginUserConfirm>({
-    //   query: (login) => ({
-    //     url: "/auth/confirm-storage",
-    //     method: "POST",
-    //     body: login,
-    //   }),
-    //   invalidatesTags: ["login"],
-    //   transformResponse: (response: { message: string }) => {
-    //     return response.message;
-    //   },
-    //   transformErrorResponse: (response: {
-    //     data: { error: errorDefaultApi[]; message: string };
-    //     status: number;
-    //   }): errorDefaultApi[] => {
-    //     if (response.data?.error && Array.isArray(response.data?.error)) {
-    //       return response.data.error.map((err) => ({
-    //         message: err.message,
-    //         field: err.field || "",
-    //       }));
-    //     }
-    //     return [
-    //       {
-    //         message: `${response.data?.message}`,
-    //         field: "",
-    //       },
-    //     ];
-    //   },
-    // }),
-
-
-
-    // En LoginSlice.ts
 loginUserConfirm: build.mutation<LoginResponse, LoginUserConfirm>({
   query: (login) => ({
     url: "/auth/confirm-storage",

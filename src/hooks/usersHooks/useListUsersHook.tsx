@@ -7,7 +7,7 @@ import { Edit, Eye } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { Id, toast } from "react-toastify";
 
-export const useListUsersHook = ({ page = 1, search = "", limit = 10 }: { page?: number; search?: string; limit?: number }) => {
+export const useListUsersHook = ({ page = 1, search = "", limit = 10, enabled = true }: { page?: number; search?: string; limit?: number; enabled:boolean }) => {
 
 
   const toastRefListar = useRef<Id | null>(null);
@@ -18,7 +18,7 @@ export const useListUsersHook = ({ page = 1, search = "", limit = 10 }: { page?:
     page,
     search,
     limit
-  });
+  },{ skip: !enabled });
 
     const [updateUserStatus, { data: dataUpdateUserStatus, isSuccess: isSuccessUpdateUserStatus, isError: isErrorUpdateUserStatus, error: errorUpdateUserStatus }] = useUpdateUsersStateMutation();
 
