@@ -8,6 +8,8 @@ import { RouteCategoriesPage } from "./categoriesRoute/RouteCategories";
 import { RouteUnitOfMeasurementsPage } from "./unit_of_measurement/RouteUnitOfMeasurement";
 import { RouteProductsPage } from "./productsRoute/RouteProducts";
 import { RouteUnauthorizedPage } from "./RouteUnauthorizedPage";
+import { RouteInventoryPage } from "./inventoryRoute/RouteInventory";
+import { RouteCompaniesPage } from "./companiesRoute/RouteCompanies";
 
 
 
@@ -56,6 +58,8 @@ const Router = () => {
         {RouteCategoriesPage()}
         {RouteUnitOfMeasurementsPage()}
         {RouteProductsPage()}
+        {RouteInventoryPage()}
+        {RouteCompaniesPage()}
         {RouteUnauthorizedPage()}
         </Routes>
 

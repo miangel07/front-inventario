@@ -172,7 +172,7 @@ const UsersPage = () => {
     page: usersPage,
     search: usersSearch,
     limit: usersLimit,
-    enabled: contenido === "users" // Parámetro para habilitar/deshabilitar el hook
+    enabled: contenido === "users" 
   });
 
   // Hook para roles - solo se ejecuta cuando contenido === "rols"
@@ -180,7 +180,7 @@ const UsersPage = () => {
     page: rollenPage,
     search: rollenSearch,
     limit: rollenLimit,
-    enabled: contenido === "rols" // Parámetro para habilitar/deshabilitar el hook
+    enabled: contenido === "rols" 
   });
 
   // Funciones para usuarios

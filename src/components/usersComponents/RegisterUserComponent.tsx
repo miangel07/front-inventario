@@ -7,7 +7,7 @@ import { useRegisterUserMutation, useUpdateUserMutation } from "@/store/slice/us
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserSchemaZod } from "@/validations/userValidation/userSchemaZod";
 import { InputDinamic } from "../DYNAMIC_COMPONENTS/InputDinamic";
-import { documentTypesOptions } from "@/utils/usersUtils/registerUserUtils";
+import { documentTypesOptions, rollenOptionsAdmin } from "@/utils/usersUtils/registerUserUtils";
 import SelectSearchAutoCompleteDinamic from "../DYNAMIC_COMPONENTS/SelectSearchAutoCompleteDinamic";
 
 const RegisterUserComponent = ({ onClose, user }: RegisterUserProps) => {
@@ -20,14 +20,15 @@ const RegisterUserComponent = ({ onClose, user }: RegisterUserProps) => {
 
   const [updateUser, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate, isError: isErrorUpdate, error: errorUpdate }] = useUpdateUserMutation();
 
+
   const isLoading = isLoadingRegister || isLoadingUpdate;
   const isSuccess = isSuccessRegister || isSuccessUpdate;
   const isError = isErrorRegister || isErrorUpdate;
   const error = errorRegister || errorUpdate;
 
-  // Determinar si está en modo edición
-  const isEditing = !!user?.id;
   
+  const isEditing = !!user?.id;
+
   const {
     control,
     handleSubmit,
@@ -35,7 +36,9 @@ const RegisterUserComponent = ({ onClose, user }: RegisterUserProps) => {
     reset,
   } = useForm<UsersType>({
     resolver: zodResolver(UserSchemaZod),
-    defaultValues: {},
+    defaultValues: {
+      business:3
+    },
   });
 
   useEffect(() => {
@@ -46,10 +49,8 @@ const RegisterUserComponent = ({ onClose, user }: RegisterUserProps) => {
     }
   }, [user, reset]);
 
-
   useEffect(() => {
-
-        if (isLoading) {
+    if (isLoading) {
       referenciaIdtostat.current = toast.loading("Procesando...");
     }
     if (isSuccess) {
@@ -58,19 +59,17 @@ const RegisterUserComponent = ({ onClose, user }: RegisterUserProps) => {
       onClose();
     }
 
-  if (isError) {
-    toast.dismiss(referenciaIdtostat.current!);
-    if (Array.isArray(error)) {
-      error.forEach((e) => toast.error(`${e.message}`));
-    } else {
-      toast.error("Ocurrió un error al procesar la solicitud");
+    if (isError) {
+      toast.dismiss(referenciaIdtostat.current!);
+      if (Array.isArray(error)) {
+        error.forEach((e) => toast.error(`${e.message}`));
+      } else {
+        toast.error("Ocurrió un error al procesar la solicitud");
+      }
     }
-    
-  }
-}, [isLoading, isSuccess, isError, error]);
+  }, [isLoading, isSuccess, isError, error]);
 
   const onSubmit = async (data: UsersType) => {
-
     try {
       if (user?.id) {
         // Para actualización, usar los datos tal como vienen del formulario
@@ -107,14 +106,7 @@ const RegisterUserComponent = ({ onClose, user }: RegisterUserProps) => {
                     <User className="w-4 h-4" />
                     Nombres
                   </label>
-                  <InputDinamic 
-                    errors={errors} 
-                    control={control} 
-                    id="username" 
-                    type="text" 
-                    name="username" 
-                    placeholder="Ingrese sus nombres" 
-                  />
+                  <InputDinamic errors={errors} control={control} id="username" type="text" name="username" placeholder="Ingrese sus nombres" />
                 </div>
 
                 <div className="space-y-2">
@@ -122,15 +114,50 @@ const RegisterUserComponent = ({ onClose, user }: RegisterUserProps) => {
                     <User className="w-4 h-4" />
                     Apellidos
                   </label>
-                  <InputDinamic 
-                    errors={errors} 
-                    control={control} 
-                    id="lastname" 
-                    type="text" 
-                    name="lastname" 
-                    placeholder="Ingrese sus apellidos" 
-                  />
+                  <InputDinamic errors={errors} control={control} id="lastname" type="text" name="lastname" placeholder="Ingrese sus apellidos" />
                 </div>
+                <div className="grid grid-cols-1 gap-4 pl-11">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                      <User className="w-4 h-4" />
+                      Rol
+                    </label>
+                    <SelectSearchAutoCompleteDinamic 
+                    data={rollenOptionsAdmin} 
+                    label="Seleccione el rol" 
+                    name="Rol" 
+                    control={control} 
+                    valueType="number" 
+                    placeholder="Escribe para buscar..." 
+                    errors={errors} 
+                    className="w-full" 
+                    radius="md" 
+                    />
+                  </div>
+                </div>
+
+
+                <div className="grid grid-cols-1 gap-4 pl-11">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                      <User className="w-4 h-4" />
+                      Negocio
+                    </label>
+                    <SelectSearchAutoCompleteDinamic 
+                    data={rollenOptionsAdmin} 
+                    label="Seleccione el negocio" 
+                    name="business" 
+                    control={control} 
+                    valueType="number" 
+                    placeholder="Escribe para buscar..." 
+                    errors={errors} 
+                    className="w-full" 
+                    radius="md" 
+                    />
+                  </div>
+                </div>
+
+
               </div>
             </div>
 
@@ -152,14 +179,14 @@ const RegisterUserComponent = ({ onClose, user }: RegisterUserProps) => {
                     Tipo de Documento
                   </label>
                   <SelectSearchAutoCompleteDinamic 
-                    data={documentTypesOptions} 
-                    label="Seleccione tipo de documento" 
-                    name="typeDocument" 
-                    control={control} 
-                    placeholder="Escribe para buscar..." 
-                    errors={errors} 
-                    className="w-full" 
-                    radius="md" 
+                  data={documentTypesOptions} 
+                  label="Seleccione tipo de documento" 
+                  name="typeDocument" 
+                  control={control} 
+                  placeholder="Escribe para buscar..." 
+                  errors={errors} 
+                  className="w-full" 
+                  radius="md" 
                   />
                 </div>
                 <div className="space-y-2">
@@ -167,14 +194,7 @@ const RegisterUserComponent = ({ onClose, user }: RegisterUserProps) => {
                     <CreditCard className="w-4 h-4" />
                     Número de Identificación
                   </label>
-                  <InputDinamic 
-                    errors={errors} 
-                    control={control} 
-                    id="identificationNumber" 
-                    type="number" 
-                    name="identificationNumber" 
-                    placeholder="Ingrese su numero de identificacion"
-                  />
+                  <InputDinamic errors={errors} control={control} id="identificationNumber" type="number" name="identificationNumber" placeholder="Ingrese su numero de identificacion" />
                 </div>
               </div>
             </div>
@@ -197,14 +217,7 @@ const RegisterUserComponent = ({ onClose, user }: RegisterUserProps) => {
                     <Mail className="w-4 h-4" />
                     Correo Electrónico
                   </label>
-                  <InputDinamic 
-                    errors={errors} 
-                    control={control} 
-                    id="email" 
-                    type="email" 
-                    name="email" 
-                    placeholder="Ingrese su correo" 
-                  />
+                  <InputDinamic errors={errors} control={control} id="email" type="email" name="email" placeholder="Ingrese su correo" />
                 </div>
 
                 <div className="space-y-2">
@@ -212,14 +225,7 @@ const RegisterUserComponent = ({ onClose, user }: RegisterUserProps) => {
                     <Phone className="w-4 h-4" />
                     Teléfono
                   </label>
-                  <InputDinamic 
-                    errors={errors} 
-                    control={control} 
-                    id="phone" 
-                    type="number" 
-                    name="phone" 
-                    placeholder="Ingrese su numero telefonico" 
-                  />
+                  <InputDinamic errors={errors} control={control} id="phone" type="number" name="phone" placeholder="Ingrese su numero telefonico" />
                 </div>
 
                 <div className="space-y-2 md:col-span-2">
@@ -227,14 +233,7 @@ const RegisterUserComponent = ({ onClose, user }: RegisterUserProps) => {
                     <MapPin className="w-4 h-4" />
                     Dirección
                   </label>
-                  <InputDinamic 
-                    errors={errors} 
-                    control={control} 
-                    id="address" 
-                    type="text" 
-                    name="address" 
-                    placeholder="Ingrese su direccion" 
-                  />
+                  <InputDinamic errors={errors} control={control} id="address" type="text" name="address" placeholder="Ingrese su direccion" />
                 </div>
               </div>
             </div>
@@ -266,12 +265,7 @@ const RegisterUserComponent = ({ onClose, user }: RegisterUserProps) => {
                       name="password"
                       placeholder="Contraseña segura"
                       icon={
-                        <button 
-                          aria-label="toggle password visibility" 
-                          type="button" 
-                          onClick={() => setIsVisible(!isVisible)} 
-                          className="focus:outline-none p-1 hover:bg-gray-100 rounded-md transition-colors"
-                        >
+                        <button aria-label="toggle password visibility" type="button" onClick={() => setIsVisible(!isVisible)} className="focus:outline-none p-1 hover:bg-gray-100 rounded-md transition-colors">
                           {isVisible ? <EyeOff className="w-4 h-4 text-gray-400" /> : <Eye className="w-4 h-4 text-gray-400" />}
                         </button>
                       }
@@ -291,12 +285,7 @@ const RegisterUserComponent = ({ onClose, user }: RegisterUserProps) => {
                       name="password_confirmation"
                       placeholder="Confirmar contraseña"
                       icon={
-                        <button 
-                          aria-label="toggle password visibility" 
-                          type="button" 
-                          onClick={() => setIsVisibleConfirma(!isVisibleConfirma)} 
-                          className="focus:outline-none p-1 hover:bg-gray-100 rounded-md transition-colors"
-                        >
+                        <button aria-label="toggle password visibility" type="button" onClick={() => setIsVisibleConfirma(!isVisibleConfirma)} className="focus:outline-none p-1 hover:bg-gray-100 rounded-md transition-colors">
                           {isVisibleConfirma ? <EyeOff className="w-4 h-4 text-gray-400" /> : <Eye className="w-4 h-4 text-gray-400" />}
                         </button>
                       }
@@ -308,19 +297,11 @@ const RegisterUserComponent = ({ onClose, user }: RegisterUserProps) => {
 
             {/* Botones de acción */}
             <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200">
-              <button 
-                type="button" 
-                onClick={onClose} 
-                className="flex-1 sm:flex-none px-6 py-3 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium focus:ring-2 focus:ring-gray-200 focus:outline-none"
-              >
+              <button type="button" onClick={onClose} className="flex-1 sm:flex-none px-6 py-3 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium focus:ring-2 focus:ring-gray-200 focus:outline-none">
                 Cancelar
               </button>
 
-              <button 
-                type="submit" 
-                disabled={isLoadingRegister || isLoadingUpdate} 
-                className="flex-1 sm:flex-none px-6 py-3 bg-accents-500 text-white rounded-lg hover:bg-accents-600 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-blue-500 focus:outline-none flex items-center justify-center gap-2"
-              >
+              <button type="submit" disabled={isLoadingRegister || isLoadingUpdate} className="flex-1 sm:flex-none px-6 py-3 bg-accents-500 text-white rounded-lg hover:bg-accents-600 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-blue-500 focus:outline-none flex items-center justify-center gap-2">
                 {isLoadingRegister || isLoadingUpdate ? (
                   <>
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>

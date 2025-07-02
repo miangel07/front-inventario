@@ -10,7 +10,8 @@ export interface UsersType {
   typeDocument: "cc" | "ti" | "ce";
   email: string;
   createDate?: string | undefined; 
-  rolId?: number;
+  Rol?: number;
+  business?: number;
   password_confirmation?: string 
 }
 // Tipado para la metadata de paginación

@@ -65,18 +65,18 @@ export const useListRollenHook = ({ page = 1, search = "", limit = 10, enabled =
         {rolle.Status === "active" ? "Activo" : "Inactivo"}
         </span>
         ),
-        actions:(
-            <>
-                  <ModalDinamic 
-                    titleButon={<Edit size={15} className="cursor-pointer" />}
-                    sizeModal="4xl" 
-                    titleModal="Actualizar Rol" 
-                    dataToEdit={rolle}
-                    children={(onClose) => <RegisterRollenComponent onClose={onClose} rolle={rolle} />}
-                    className="bg-white font-roboto"
-                  /> 
-            </>
-        )
+        // actions:(
+        //     <>
+        //           <ModalDinamic 
+        //             titleButon={<Edit size={15} className="cursor-pointer" />}
+        //             sizeModal="4xl" 
+        //             titleModal="Actualizar Rol" 
+        //             dataToEdit={rolle}
+        //             children={(onClose) => <RegisterRollenComponent onClose={onClose} rolle={rolle} />}
+        //             className="bg-white font-roboto"
+        //           /> 
+        //     </>
+        // )
   }))|| [];
 
   return {

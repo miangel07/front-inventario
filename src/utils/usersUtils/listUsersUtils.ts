@@ -22,7 +22,7 @@ export const columnsRollen:{
     {key:'active',label:''},
     {key:'nameRole',label:'ROL'},
     {key:'Status',label:'ESTADO'},
-    {key:'actions',label:'ACCIONES'}
+    // {key:'actions',label:'ACCIONES'}
 ]
 
 

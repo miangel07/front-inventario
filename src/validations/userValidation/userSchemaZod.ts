@@ -13,7 +13,8 @@ export const UserSchemaZod = z.object({
   }),
   email: z.string().email("Debe ser un email válido"),
   createDate: z.string().optional(),
-  rolId: z.coerce.number().positive().optional(),
+  Rol: z.coerce.number().positive().optional(),
+  business: z.coerce.number().positive().optional(),
 });
 
 // Tipo inferido desde el schema de Zod
