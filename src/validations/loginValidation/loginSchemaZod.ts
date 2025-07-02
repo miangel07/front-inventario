@@ -4,7 +4,6 @@ export const LoginTypeSchema = z.object({
   email: z.string().email("Debe ser un correo electrónico válido"),
   password: z.string()
     .min(6, "La contraseña debe tener al menos 6 caracteres")
-    .regex(/[A-Z]/, "La contraseña debe contener al menos una mayúscula")
     .regex(/[0-9]/, "La contraseña debe contener al menos un número")
 });
 
