@@ -21,7 +21,7 @@ interface ColumnData {
 }
 
 interface TableData {
-    [key: string]: string | number | boolean | null | JSX.Element | undefined;
+    [key: string]: string | number | boolean | null | JSX.Element | File | undefined;
 }
 
 // Tipos para Nest.js - Metadata de paginación

@@ -3,7 +3,7 @@ export const columnsCategories:{
     label:string
 }[]=[
     {key:'active',label:''},
-    {key:'NameCategory',label:'NOMBRE BODEGA'},
+    {key:'NameCategory',label:'NOMBRE CATEGORIA'},
     {key:'Status',label:'ESTADO'},
     {key:'actions',label:'ACCIONES'},
 ]

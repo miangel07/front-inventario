@@ -1,9 +1,8 @@
 import { ModalDinamic } from "@/components/DYNAMIC_COMPONENTS/ModalDinamic";
-import DetailsWineriesComponent from "@/components/wineriesComponents/DetailsWineriesComponent";
 import RegisterWineriesComponent from "@/components/wineriesComponents/RegisterWineriesComponent";
 import { useGetWineriesQuery, useUpdateWinerieStateMutation } from "@/store/slice/wineriesSlice";
 import { Checkbox } from "@heroui/react";
-import { Edit, Eye } from "lucide-react";
+import { Edit } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { Id, toast } from "react-toastify";
 
@@ -52,7 +51,7 @@ export const useListWineriesHook = ({ page = 1, search = "", limit = 10 }: { pag
   const WinerieStatus = (id: number, NameCategory: string, currentStatus: string) => {
     try {
       if (id === 0) {
-        return toast.error("Categorya no seleccionada");
+        return toast.error("Bodega no seleccionada");
       }
 
       // Determinar el nuevo estado (toggle)
@@ -62,7 +61,7 @@ export const useListWineriesHook = ({ page = 1, search = "", limit = 10 }: { pag
         () => (
           <div>
             <p>
-              ¿Está seguro de cambiar el estado del usuario <strong>{NameCategory}</strong>?
+              ¿Está seguro de cambiar el estado de la bodega <strong>{NameCategory}</strong>?
             </p>
             <div
               style={{
