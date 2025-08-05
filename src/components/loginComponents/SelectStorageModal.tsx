@@ -6,21 +6,16 @@ import { useLoginUserConfirmMutation } from "@/store/slice/loginSlice";
 import { toast } from "react-toastify";
 import { useState, useEffect, useRef } from "react";
 import { Id } from "react-toastify";
+import { AuthUserType } from "@/types/authTypes/authTypes";
+import { StorageLocation } from "@/types/login/loginType"; 
 
 interface SelectStorageModalProps {
-  user: {
-    id: number;
-    username: string;
-    email: string;
-    role: string;
-    business: any;
-    storages: Array<{ id: number; name: string }>;
-  };
+  user: AuthUserType & { storages: StorageLocation[] };
   onClose: () => void;
+  onSelect?: (storageId: number) => void; 
 }
 
-export const SelectStorageModal = ({ user, onClose }: SelectStorageModalProps) => {
-
+export const SelectStorageModal = ({ user, onClose, onSelect }: SelectStorageModalProps) => {
   const navigate = useNavigate();
   const { confirmStorage, clearTempUser } = useAuth();
   const [loginUserConfirm, { isLoading, isSuccess, isError, error, data }] = useLoginUserConfirmMutation();
@@ -66,6 +61,14 @@ export const SelectStorageModal = ({ user, onClose }: SelectStorageModalProps) =
     }
 
     try {
+      // Si hay un callback onSelect, lo usamos primero
+      if (onSelect) {
+        onSelect(selectedStorageId);
+        onClose();
+        return;
+      }
+
+      // Si no, hacemos la confirmación tradicional
       await loginUserConfirm({
         email: user.email, 
         storageId: selectedStorageId
@@ -76,7 +79,7 @@ export const SelectStorageModal = ({ user, onClose }: SelectStorageModalProps) =
   };
 
   const handleCancel = () => {
-    clearTempUser(); // Limpiar usuario temporal
+    clearTempUser();
     onClose();
   };
 
@@ -92,7 +95,7 @@ export const SelectStorageModal = ({ user, onClose }: SelectStorageModalProps) =
           <CardBody className="p-6">
             <h2 className="text-xl font-bold mb-4">Selecciona una bodega</h2>
             <p className="text-gray-600 mb-6">
-              Tienes acceso a múltiples bodegas. Por favor selecciona una para continuar.
+              Hola {user.username}, tienes acceso a múltiples bodegas. Por favor selecciona una para continuar.
             </p>
 
             <div className="space-y-3 mb-6">

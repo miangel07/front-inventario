@@ -15,6 +15,11 @@ export const UserSchemaZod = z.object({
   createDate: z.string().optional(),
   Rol: z.coerce.number().positive().optional(),
   business: z.coerce.number().positive().optional(),
+  storageData: z.object({
+  nameStorage: z.string().min(1, "El nombre del almacén es requerido").optional(),
+  address: z.string().min(1, "La dirección del almacén es requerida").optional(),
+  TypeStorage: z.string().min(1, "El tipo de almacén es requerido").optional()
+}).optional()
 });
 
 // Tipo inferido desde el schema de Zod
@@ -30,7 +35,4 @@ export const UserUpdateSchemaZod = UserSchemaZod.partial().required({
   id: true,
 });
 
-export const RolleSchemaZod = z.object({
-  id: z.coerce.number().positive().optional(),
-  nameRol: z.string().min(1, "El nombre del rol es requerido"),
-});
+

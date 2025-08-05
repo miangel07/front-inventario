@@ -1,6 +1,6 @@
 import { baseQueryconfig } from "@/config/configAxios/configAxios";
 import { errorDefaultApi, ExtendedErrorDefaul } from "@/types/configAxios/axiosConfigType";
-import { GetRollenParams, GetUsersParams, RollenResponse, RollenType, UsersResponse, UsersType } from "@/types/usersTypes/usersTypes";
+import { GetUsersParams,  UsersResponse, UsersType } from "@/types/usersTypes/usersTypes";
 import { createApi } from "@reduxjs/toolkit/query/react";
 
 export const UsersSlice = createApi({
@@ -43,6 +43,39 @@ export const UsersSlice = createApi({
     >({
       query: (user) => ({
         url: "/users",
+        method: "POST",
+        body: user,
+      }),
+      invalidatesTags: ["users"],
+      transformResponse: (response: { message: string }) => {
+        return response.message;
+      },
+      transformErrorResponse: (response: {
+        data: { error: errorDefaultApi[]; message: string };
+        status: number;
+      }): errorDefaultApi[] => {
+        if (response.data?.error && Array.isArray(response.data?.error)) {
+          return response.data.error.map((err) => ({
+            message: err.message,
+            field: err.field || "",
+          }));
+        }
+        return [
+          {
+            message: `${response.data?.message}`,
+            field: "",
+          },
+        ];
+      },
+    }),
+
+        // //Registro usuario con bodega
+    registerUserStorage: build.mutation<
+      string,
+      UsersType
+    >({
+      query: (user) => ({
+        url: "/users/createUserStorage",
         method: "POST",
         body: user,
       }),
@@ -163,7 +196,7 @@ export const UsersSlice = createApi({
 
     }),
 
-    // //Registro usuario
+    // //Registro rol
     registerRolle: build.mutation<
       string,
       RollenType
@@ -196,7 +229,7 @@ export const UsersSlice = createApi({
       },
     }),
 
-    // //actualizar usuario:
+    // //actualizar rol:
     updateRolle: build.mutation<
       string,
       RollenType
@@ -229,7 +262,7 @@ export const UsersSlice = createApi({
       },
     }),
 
-    //actualizar estado bodega
+    //actualizar estado rol
     updateRolleState: build.mutation<
       string,
       { id: number; status: string }
@@ -272,6 +305,7 @@ export const UsersSlice = createApi({
 export const {
     useGetUsersQuery,
     useRegisterUserMutation,
+    useRegisterUserStorageMutation,
     useUpdateUserMutation,
     useUpdateUsersStateMutation,
     useGetRollenQuery,

@@ -9,6 +9,7 @@ export interface MenuItem {
   badge?: string;
   permission?: string; // Para control de permisos
   children?: MenuItem[]; // Para submenús futuros
+  rolesPermitidos?: string[];
 }
 
 export interface SidebarProps {

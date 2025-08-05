@@ -12,21 +12,21 @@ export interface RegisterLoginProps {
     onClose:() => void,
 }
 
-export interface Storage {
+export interface StorageLocation {
   id: number;
   name: string;
 }
 
 export interface LoginResponse {
-  access_token: string;
+  access_token?: string;  
   user: {
     id: number;
     username: string;
     email: string;
     role: string;
-    business: any;
-        storage?: Storage | null;
-    storages?: Storage[]; 
+    businessId: number;   
+    storage?: StorageLocation | null;
+    storages?: StorageLocation[]; 
   };
   message: string;
 }

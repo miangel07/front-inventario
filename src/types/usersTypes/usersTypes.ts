@@ -12,6 +12,11 @@ export interface UsersType {
   createDate?: string | undefined; 
   Rol?: number;
   business?: number;
+    storageData?: {
+    nameStorage?: string;
+    address?: string;
+    TypeStorage?: string;
+  };
   password_confirmation?: string 
 }
 // Tipado para la metadata de paginación
@@ -43,35 +48,3 @@ export interface RegisterUserProps {
 }
 
 
-
-export interface RollenType {
-  id?: number; 
-  nameRol: string;
-  Status?: "active" | "inactive";
-}
-// Tipado para la metadata de paginación
-export interface RollenPaginationMeta {
-  total: number;
-  page: number;
-  limit: number;
-  lastPage: number;
-}
-// Tipado para los parámetros de consulta
-export interface GetRollenParams {
-  page?: number;
-  search?: string;
-  limit?: number; 
-  enabled?:boolean
-}
-
-export interface RollenResponse {
-  message: string;
-  data: RollenType[];
-  meta: RollenPaginationMeta;
-}
-
-export interface RegisterRollenProps {
-  onClose: () => void;
-  isOpen?: boolean;
-  rolle?: RollenType;
-}

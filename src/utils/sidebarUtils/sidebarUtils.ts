@@ -146,14 +146,16 @@ export const bottomMenuItems: MenuItem[] = [
     icon: Users,
     // href: '/admin/usuarios',
     href:'/users',
-    category: 'admin'
+    category: 'admin',
+    rolesPermitidos: ['admin', 'super_admin']
   },
   {
     key: 'configuracion',
     label: 'Configuración',
     icon: Settings,
     href: '/configuracion',
-    category: 'admin'
+    category: 'admin',
+    rolesPermitidos: ['super_admin']
   },
   {
     key: 'ayuda',

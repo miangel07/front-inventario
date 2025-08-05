@@ -42,7 +42,7 @@ const {
   const usersOptions =
     usersResponse?.data.map((items) => ({
       key: `${items.id}`,
-      label: items?.username,
+      label: items?.username
     })) || [];
 
 

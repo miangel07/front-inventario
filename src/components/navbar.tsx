@@ -68,14 +68,14 @@ export const Navbar = () => {
         justify="end"
       >
         {/* Indicadores de notificaciones */}
-        <div className="flex items-center gap-3 mr-4">
+        {/* <div className="flex items-center gap-3 mr-4">
           <button className="relative p-2 rounded-xl text-primarys-600 hover:text-accents-600 hover:bg-accents-50 transition-all duration-200 group">
             <Bell size={20} className="group-hover:scale-110 transition-transform" />
             <span className="absolute -top-1 -right-1 w-3 h-3 bg-dangers-500 rounded-full flex items-center justify-center">
               <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
             </span>
           </button>
-        </div>
+        </div> */}
       </NavbarContent>
 
       <NavbarContent
