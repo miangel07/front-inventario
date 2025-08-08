@@ -42,7 +42,7 @@ const RegisterUnitOfMeasurementComponent = ({ onClose, unit }: RegisterUnitOfMea
     }
     if (isSuccess) {
       toast.dismiss(referenciaIdtostat.current!);
-      toast.success(`Bodega ${unit ? "actualizada" : "registrada"} correctamente.`);
+      toast.success(`Unidad ${unit ? "actualizada" : "registrada"} correctamente.`);
       onClose();
     }
 
@@ -121,12 +121,12 @@ const RegisterUnitOfMeasurementComponent = ({ onClose, unit }: RegisterUnitOfMea
                     {unit ? (
                       <>
                         <Edit3 className="w-4 h-4" />
-                        Actualizar Almacén
+                        Actualizar Unidad 
                       </>
                     ) : (
                       <>
                         <PlusCircle className="w-4 h-4" />
-                        Registrar Almacén
+                        Registrar Unidad
                       </>
                     )}
                   </>

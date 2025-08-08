@@ -11,6 +11,7 @@ import SelectSearchAutoCompleteDinamic from "../DYNAMIC_COMPONENTS/SelectSearchA
 import { useGetUnitOfMeasurementsQuery } from "@/store/slice/unitOfMeasurementSlice";
 import { useGetCategoriesQuery } from "@/store/slice/categoriesSlice";
 import { useGetWineriesQuery } from "@/store/slice/wineriesSlice";
+import { ProductSchema } from "@/validations/productsValidation/productsSchemaZod";
 
 const RegisterProductsComponent = ({ onClose, product }: RegisterProductsProps) => {
   const referenciaIdtostat = useRef<Id | null>(null);

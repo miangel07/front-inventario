@@ -151,7 +151,7 @@ import { selectUserRole } from "@/store/slice/authSlice";
 import { useAppSelector } from "@/store/store";
 import { columnsBusiness, columnsUsers } from "@/utils/usersUtils/listUsersUtils";
 import { Spinner } from "@heroui/react";
-import { Building2, Crown, User } from "lucide-react";
+import { Building2, User } from "lucide-react";
 import { useState } from "react";
 
 const UsersPage = () => {

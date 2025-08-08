@@ -141,7 +141,7 @@ export const useListWineriesHook = ({ page = 1, search = "", limit = 10 }: { pag
       Status: <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${winerie.Status === "active" ? "bg-accents-100 text-accents-800" : "bg-dangers-100 text-dangers-800"}`}>{winerie.Status === "active" ? "Activo" : "Inactivo"}</span>,
       actions: (
         <>
-          <ModalDinamic titleButon={<Edit size={15} className="cursor-pointer" />} sizeModal="4xl" titleModal="Actualizar usuario" dataToEdit={winerie} children={(onClose) => <RegisterWineriesComponent onClose={onClose} winerie={winerie} />} className="bg-white font-roboto" />
+          <ModalDinamic titleButon={<Edit size={15} className="cursor-pointer" />} sizeModal="4xl" titleModal="Actualizar bodega" dataToEdit={winerie} children={(onClose) => <RegisterWineriesComponent onClose={onClose} winerie={winerie} />} className="bg-white font-roboto" />
         </>
       ),
     })) || [];

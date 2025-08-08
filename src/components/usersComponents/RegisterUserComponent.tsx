@@ -760,7 +760,8 @@ const RegisterUserComponent = ({ onClose, user }: RegisterUserProps) => {
 
   const userRole = useAppSelector(selectUserRole);
 
-  // console.log('rol :', userRole)
+  console.log('datos de usuario para editar :',user)
+
 
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [isVisibleConfirma, setIsVisibleConfirma] = useState<boolean>(false);
@@ -883,13 +884,13 @@ const RegisterUserComponent = ({ onClose, user }: RegisterUserProps) => {
         
         if (hasStorageData) {
           // Usar el slice que registra usuario con bodega
-          console.log("Registrando usuario con bodega:", createData);
+          
           await registerUserStorage(createData).unwrap();
         } else {
           // Usar el slice que registra usuario sin bodega
           // Eliminar storageData si existe pero no está completo
           const { storageData, ...userDataWithoutStorage } = createData;
-          console.log("Registrando usuario sin bodega:", userDataWithoutStorage);
+
           await registerUser(userDataWithoutStorage).unwrap();
         }
       }

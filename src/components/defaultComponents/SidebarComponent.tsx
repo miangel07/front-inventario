@@ -767,7 +767,291 @@
 
 // export default SidebarComponent;
 
-import { useState, useEffect } from 'react';
+// import { useState, useEffect } from 'react';
+// import {
+//   Button,
+//   Divider,
+//   Chip,
+//   Badge
+// } from '@heroui/react';
+// import { ChevronRight, Bell, Menu, X } from 'lucide-react';
+// import { bottomMenuItems, categoryLabels, menuItems, getDynamicBadges } from '@/utils/sidebarUtils/sidebarUtils';
+// import { MenuItem, SidebarProps } from '@/types/sidebarTypes/sidebarTypes';
+// import { Link, useLocation } from 'react-router-dom';
+// import { useAppSelector } from '@/store/store';
+// import { selectUserRole } from '@/store/slice/authSlice';
+
+// const SidebarComponent = ({
+//   activeMenuItem,
+//   onMenuItemClick,
+//   onMobileClose,
+//   isMobileOpen,
+// }: SidebarProps) => {
+//   const userRole = useAppSelector(selectUserRole);
+//   const location = useLocation();
+//   const [isMobile, setIsMobile] = useState(false);
+//   const [badges, setBadges] = useState<Record<string, string>>({});
+//   const [sidebarOpen, setSidebarOpen] = useState(true);
+
+//   useEffect(() => {
+//     const checkMobile = () => {
+//       const mobile = window.innerWidth < 1024;
+//       setIsMobile(mobile);
+//       // En desktop, el sidebar siempre está abierto por defecto
+//       if (!mobile) {
+//         setSidebarOpen(true);
+//       }
+//     };
+    
+//     checkMobile();
+//     window.addEventListener('resize', checkMobile);
+//     return () => window.removeEventListener('resize', checkMobile);
+//   }, []);
+
+//   useEffect(() => {
+//     const dynamicBadges = getDynamicBadges();
+//     setBadges(dynamicBadges);
+//   }, []);
+
+//   // Función para determinar si un item está activo basado en la URL actual
+//   const isMenuItemActive = (item: MenuItem) => {
+//     if (activeMenuItem && activeMenuItem === item.key) {
+//       return true;
+//     }
+    
+//     // Fallback: usar la URL actual para determinar el item activo
+//     const currentPath = location.pathname;
+    
+//     // Coincidencia exacta
+//     if (currentPath === item.href) {
+//       return true;
+//     }
+    
+//     // Coincidencia parcial para rutas anidadas
+//     if (currentPath.startsWith(item.href) && item.href !== '/') {
+//       return true;
+//     }
+    
+//     // Casos especiales para rutas que pueden tener variaciones
+//     if (item.key === 'dashboard' && (currentPath === '/home' || currentPath === '/')) {
+//       return true;
+//     }
+    
+//     return false;
+//   };
+
+//   const handleMenuClick = (key: string) => {
+//     onMenuItemClick?.(key);
+    
+//     // En móvil, cerrar sidebar después de seleccionar
+//     if (isMobile) {
+//       onMobileClose?.();
+//     }
+//   };
+
+//   const toggleSidebar = () => {
+//     setSidebarOpen(!sidebarOpen);
+//   };
+
+//   // Determinar el estado del sidebar basado en el contexto
+//   const shouldShowSidebar = isMobile ? isMobileOpen : true;
+//   const sidebarWidth = sidebarOpen ? 'w-64' : 'w-20';
+//   const sidebarTranslate = isMobile 
+//     ? (isMobileOpen ? 'translate-x-0' : '-translate-x-full')
+//     : 'translate-x-0';
+
+//   const sidebarClasses = `
+//     fixed top-16 left-0 h-[calc(100vh-4rem)]
+//     ${sidebarWidth}
+//     ${sidebarTranslate}
+//     bg-primarys-800/95 backdrop-blur-xl border-r border-primarys-700/50
+//     transition-all duration-300 ease-in-out
+//     shadow-2xl lg:shadow-xl
+//     z-30 flex flex-col
+//     ${!sidebarOpen ? 'overflow-hidden' : ''}
+//   `;
+
+//   const renderMenuItem = (item: MenuItem, isBottom = false) => {
+//     const IconComponent = item.icon;
+//     const isActive = isMenuItemActive(item);
+//     const dynamicBadge = badges[item.key] || item.badge;
+
+//     return (
+//       <Button
+//         key={item.key}
+//         as={Link}
+//         to={item.href}
+//         variant="light"
+//         className={`
+//           w-full ${sidebarOpen ? 'h-12 px-4' : 'h-10 px-2 justify-center'} mb-2 justify-start group rounded-xl
+//           ${isActive ? 
+//             'bg-accents-500/20 text-accents-400 font-semibold shadow-lg border-l-4 border-accents-400 backdrop-blur-sm' : 
+//             'text-primarys-200 hover:bg-primarys-700/60 hover:text-white hover:shadow-md'
+//           }
+//           transition-all duration-200 ease-in-out
+//           ${!isBottom && sidebarOpen ? 'hover:translate-x-2 hover:scale-105' : 'hover:translate-x-1'}
+//           backdrop-blur-sm
+//         `}
+//         startContent={
+//           <div className={`flex-shrink-0 transition-all duration-200 ${
+//             isActive ? 'scale-110 text-accents-400' : 'group-hover:scale-110 group-hover:text-accents-300'
+//           }`}>
+//             <IconComponent size={20} />
+//           </div>
+//         }
+//         endContent={
+//           sidebarOpen && (
+//             <div className="flex items-center gap-2 ml-auto">
+//               {dynamicBadge && (
+//                 <Chip 
+//                   size="sm" 
+//                   color={item.key.includes('activos') || item.key.includes('pendientes') ? "warning" : "danger"} 
+//                   variant="solid"
+//                   className="animate-pulse shadow-sm"
+//                 >
+//                   {dynamicBadge}
+//                 </Chip>
+//               )}
+//               {isActive && !isBottom && (
+//                 <ChevronRight 
+//                   size={16} 
+//                   className="flex-shrink-0 animate-pulse text-accents-400" 
+//                 />
+//               )}
+//             </div>
+//           )
+//         }
+//         onPress={() => handleMenuClick(item.key)}
+//       >
+//         {sidebarOpen && (
+//           <span className="flex-1 text-left truncate font-medium">
+//             {item.label}
+//           </span>
+//         )}
+//       </Button>
+//     );
+//   };
+
+//   const filteredMenuItems = userRole === 'admin' ? menuItems : 
+//     menuItems.filter(item => !['usuarios', 'empresas'].includes(item.key));
+
+//   const groupedMenuItems = filteredMenuItems.reduce((acc, item) => {
+//     const category = item.category || 'other';
+//     if (!acc[category]) acc[category] = [];
+//     acc[category].push(item);
+//     return acc;
+//   }, {} as Record<string, MenuItem[]>);
+
+//   const categoryOrder = ['main', 'inventario', 'prestamos', 'movimientos', 'reportes'];
+//   const orderedCategories = categoryOrder.filter(cat => groupedMenuItems[cat]);
+
+//   if (!shouldShowSidebar) {
+//     return null;
+//   }
+
+//   return (
+//     <aside className={sidebarClasses}>
+//       {/* Header del Sidebar con botón de toggle */}
+//       <div className="p-4 border-b border-primarys-700/50 bg-primarys-800/50 backdrop-blur-md flex items-center">
+//         {sidebarOpen ? (
+//           <>
+//             <div className="flex flex-col flex-1">
+//               <h2 className="text-sm font-bold text-white">Sistema de Inventario</h2>
+//               <span className="text-xs text-primarys-300">Panel de Control</span>
+//             </div>
+//             {!isMobile && (
+//               <Button 
+//                 isIconOnly 
+//                 size="sm" 
+//                 variant="light" 
+//                 className="text-primarys-300 hover:text-accents-400 hover:bg-primarys-700/50 transition-all duration-200"
+//                 onPress={toggleSidebar}
+//               >
+//                 <X size={16} />
+//               </Button>
+//             )}
+//           </>
+//         ) : (
+//           <div className="w-full flex justify-center">
+//             <Button 
+//               isIconOnly 
+//               size="sm" 
+//               variant="light" 
+//               className="text-primarys-300 hover:text-accents-400 hover:bg-primarys-700/50 transition-all duration-200"
+//               onPress={toggleSidebar}
+//             >
+//               <Menu size={16} />
+//             </Button>
+//           </div>
+//         )}
+//       </div>
+
+//       {/* Notificaciones - siempre visibles */}
+//       <div className={`px-4 py-2 border-b border-primarys-700/50 ${sidebarOpen ? 'flex justify-end' : 'flex justify-center'}`}>
+//         <Badge content="3" color="danger" size="sm" className="animate-pulse">
+//           <Button 
+//             isIconOnly 
+//             size="sm" 
+//             variant="light" 
+//             className="text-primarys-300 hover:text-accents-400 hover:bg-primarys-700/50 transition-all duration-200"
+//           >
+//             <Bell size={16} />
+//           </Button>
+//         </Badge>
+//       </div>
+
+//       {/* Navigation Menu */}
+//       <nav className="flex-1 p-4 space-y-2 overflow-y-auto scrollbar-hide">
+//         {orderedCategories.map((category, index) => {
+//           const items = groupedMenuItems[category];
+//           return (
+//             <div key={category} className="mb-6">
+//               {/* Solo mostrar títulos de categorías cuando el sidebar está abierto */}
+//               {sidebarOpen && (
+//                 <div className="px-3 mb-3">
+//                   <p className="text-xs font-bold text-primarys-400 uppercase tracking-widest">
+//                     {categoryLabels[category as keyof typeof categoryLabels] || category}
+//                   </p>
+//                 </div>
+//               )}
+//               <div className="space-y-1">
+//                 {items.map(item => renderMenuItem(item))}
+//               </div>
+//               {/* Solo mostrar divisores cuando el sidebar está abierto */}
+//               {sidebarOpen && index < orderedCategories.length - 1 && (
+//                 <Divider className="my-4 bg-primarys-700/50" />
+//               )}
+//             </div>
+//           );
+//         })}
+//       </nav>
+
+//       {/* Bottom Menu - Solo para administradores */}
+//       {userRole && ['admin', 'super_admin'].includes(userRole) && (
+//         <div className="p-4 border-t border-primarys-700/50 bg-primarys-800/30 backdrop-blur-md">
+//           {/* Solo mostrar título de Administración cuando el sidebar está abierto */}
+//           {sidebarOpen && (
+//             <div className="px-3 mb-3">
+//               <p className="text-xs font-bold text-primarys-400 uppercase tracking-widest">
+//                 Administración
+//               </p>
+//             </div>
+//           )}
+//           <div className="space-y-1">
+//             {bottomMenuItems
+//               .filter(item => !item.rolesPermitidos || item.rolesPermitidos.includes(userRole))
+//               .map(item => renderMenuItem(item, true))}
+//           </div>
+//         </div>
+//       )}
+//     </aside>
+//   );
+// };
+
+// export default SidebarComponent;
+
+
+import { useState, useEffect, useRef } from 'react';
 import {
   Button,
   Divider,
@@ -792,6 +1076,9 @@ const SidebarComponent = ({
   const [isMobile, setIsMobile] = useState(false);
   const [badges, setBadges] = useState<Record<string, string>>({});
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  
+  // Ref para el sidebar
+  const sidebarRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -812,6 +1099,42 @@ const SidebarComponent = ({
     const dynamicBadges = getDynamicBadges();
     setBadges(dynamicBadges);
   }, []);
+
+  // Efecto para manejar clicks fuera en móviles
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      const target = event.target as Node;
+      
+      // Solo aplicar en móviles y cuando el sidebar esté abierto
+      if (
+        isMobile && 
+        isMobileOpen && 
+        sidebarRef.current && 
+        !sidebarRef.current.contains(target)
+      ) {
+        onMobileClose?.();
+      }
+    };
+
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isMobile && isMobileOpen) {
+        onMobileClose?.();
+      }
+    };
+
+    // Solo agregar listeners cuando estamos en móvil y el sidebar está abierto
+    if (isMobile && isMobileOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
+      document.addEventListener('keydown', handleEscapeKey);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [isMobile, isMobileOpen, onMobileClose]);
 
   // Función para determinar si un item está activo basado en la URL actual
   const isMenuItemActive = (item: MenuItem) => {
@@ -950,16 +1273,38 @@ const SidebarComponent = ({
   }
 
   return (
-    <aside className={sidebarClasses}>
-      {/* Header del Sidebar con botón de toggle */}
-      <div className="p-4 border-b border-primarys-700/50 bg-primarys-800/50 backdrop-blur-md flex items-center">
-        {sidebarOpen ? (
-          <>
-            <div className="flex flex-col flex-1">
-              <h2 className="text-sm font-bold text-white">Sistema de Inventario</h2>
-              <span className="text-xs text-primarys-300">Panel de Control</span>
-            </div>
-            {!isMobile && (
+    <>
+      {/* Overlay para móviles - solo se muestra cuando el sidebar está abierto */}
+      {isMobile && isMobileOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-20 lg:hidden transition-opacity duration-300"
+          onClick={onMobileClose}
+        />
+      )}
+
+      <aside ref={sidebarRef} className={sidebarClasses}>
+        {/* Header del Sidebar con botón de toggle */}
+        <div className="p-4 border-b border-primarys-700/50 bg-primarys-800/50 backdrop-blur-md flex items-center">
+          {sidebarOpen ? (
+            <>
+              <div className="flex flex-col flex-1">
+                <h2 className="text-sm font-bold text-white">Sistema de Inventario</h2>
+                <span className="text-xs text-primarys-300">Panel de Control</span>
+              </div>
+              {!isMobile && (
+                <Button 
+                  isIconOnly 
+                  size="sm" 
+                  variant="light" 
+                  className="text-primarys-300 hover:text-accents-400 hover:bg-primarys-700/50 transition-all duration-200"
+                  onPress={toggleSidebar}
+                >
+                  <X size={16} />
+                </Button>
+              )}
+            </>
+          ) : (
+            <div className="w-full flex justify-center">
               <Button 
                 isIconOnly 
                 size="sm" 
@@ -967,84 +1312,72 @@ const SidebarComponent = ({
                 className="text-primarys-300 hover:text-accents-400 hover:bg-primarys-700/50 transition-all duration-200"
                 onPress={toggleSidebar}
               >
-                <X size={16} />
+                <Menu size={16} />
               </Button>
-            )}
-          </>
-        ) : (
-          <div className="w-full flex justify-center">
+            </div>
+          )}
+        </div>
+
+        {/* Notificaciones - siempre visibles */}
+        <div className={`px-4 py-2 border-b border-primarys-700/50 ${sidebarOpen ? 'flex justify-end' : 'flex justify-center'}`}>
+          <Badge content="3" color="danger" size="sm" className="animate-pulse">
             <Button 
               isIconOnly 
               size="sm" 
               variant="light" 
               className="text-primarys-300 hover:text-accents-400 hover:bg-primarys-700/50 transition-all duration-200"
-              onPress={toggleSidebar}
             >
-              <Menu size={16} />
+              <Bell size={16} />
             </Button>
+          </Badge>
+        </div>
+
+        {/* Navigation Menu */}
+        <nav className="flex-1 p-4 space-y-2 overflow-y-auto scrollbar-hide">
+          {orderedCategories.map((category, index) => {
+            const items = groupedMenuItems[category];
+            return (
+              <div key={category} className="mb-6">
+                {/* Solo mostrar títulos de categorías cuando el sidebar está abierto */}
+                {sidebarOpen && (
+                  <div className="px-3 mb-3">
+                    <p className="text-xs font-bold text-primarys-400 uppercase tracking-widest">
+                      {categoryLabels[category as keyof typeof categoryLabels] || category}
+                    </p>
+                  </div>
+                )}
+                <div className="space-y-1">
+                  {items.map(item => renderMenuItem(item))}
+                </div>
+                {/* Solo mostrar divisores cuando el sidebar está abierto */}
+                {sidebarOpen && index < orderedCategories.length - 1 && (
+                  <Divider className="my-4 bg-primarys-700/50" />
+                )}
+              </div>
+            );
+          })}
+        </nav>
+
+        {/* Bottom Menu - Solo para administradores */}
+        {userRole && ['admin', 'super_admin'].includes(userRole) && (
+          <div className="p-4 border-t border-primarys-700/50 bg-primarys-800/30 backdrop-blur-md">
+            {/* Solo mostrar título de Administración cuando el sidebar está abierto */}
+            {sidebarOpen && (
+              <div className="px-3 mb-3">
+                <p className="text-xs font-bold text-primarys-400 uppercase tracking-widest">
+                  Administración
+                </p>
+              </div>
+            )}
+            <div className="space-y-1">
+              {bottomMenuItems
+                .filter(item => !item.rolesPermitidos || item.rolesPermitidos.includes(userRole))
+                .map(item => renderMenuItem(item, true))}
+            </div>
           </div>
         )}
-      </div>
-
-      {/* Notificaciones - siempre visibles */}
-      <div className={`px-4 py-2 border-b border-primarys-700/50 ${sidebarOpen ? 'flex justify-end' : 'flex justify-center'}`}>
-        <Badge content="3" color="danger" size="sm" className="animate-pulse">
-          <Button 
-            isIconOnly 
-            size="sm" 
-            variant="light" 
-            className="text-primarys-300 hover:text-accents-400 hover:bg-primarys-700/50 transition-all duration-200"
-          >
-            <Bell size={16} />
-          </Button>
-        </Badge>
-      </div>
-
-      {/* Navigation Menu */}
-      <nav className="flex-1 p-4 space-y-2 overflow-y-auto scrollbar-hide">
-        {orderedCategories.map((category, index) => {
-          const items = groupedMenuItems[category];
-          return (
-            <div key={category} className="mb-6">
-              {/* Solo mostrar títulos de categorías cuando el sidebar está abierto */}
-              {sidebarOpen && (
-                <div className="px-3 mb-3">
-                  <p className="text-xs font-bold text-primarys-400 uppercase tracking-widest">
-                    {categoryLabels[category as keyof typeof categoryLabels] || category}
-                  </p>
-                </div>
-              )}
-              <div className="space-y-1">
-                {items.map(item => renderMenuItem(item))}
-              </div>
-              {/* Solo mostrar divisores cuando el sidebar está abierto */}
-              {sidebarOpen && index < orderedCategories.length - 1 && (
-                <Divider className="my-4 bg-primarys-700/50" />
-              )}
-            </div>
-          );
-        })}
-      </nav>
-
-      {/* Bottom Menu - Solo para administradores */}
-      {userRole && ['admin', 'super_admin'].includes(userRole) && (
-        <div className="p-4 border-t border-primarys-700/50 bg-primarys-800/30 backdrop-blur-md">
-          {/* Solo mostrar título de Administración cuando el sidebar está abierto */}
-          {sidebarOpen && (
-            <div className="px-3 mb-3">
-              <p className="text-xs font-bold text-primarys-400 uppercase tracking-widest">
-                Administración
-              </p>
-            </div>
-          )}
-          <div className="space-y-1">
-            {bottomMenuItems
-              .filter(item => !item.rolesPermitidos || item.rolesPermitidos.includes(userRole))
-              .map(item => renderMenuItem(item, true))}
-          </div>
-        </div>
-      )}
-    </aside>
+      </aside>
+    </>
   );
 };
 

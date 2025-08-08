@@ -14,6 +14,8 @@ import { useGetUsersQuery } from "@/store/slice/usersSlice";
 const RegisterWineriesComponent = ({ onClose, winerie }: RegisterWinerieProps) => {
   const referenciaIdtostat = useRef<Id | null>(null);
 
+  console.log('Datos de bodega para editar :',winerie)
+
   const [registerUser, { isLoading: isLoadingRegister, isSuccess: isSuccessRegister, isError: isErrorRegister, error: errorRegister }] = useRegisterWinerieMutation();
 
   const [updateUser, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate, isError: isErrorUpdate, error: errorUpdate }] = useUpdateWinerieMutation();
